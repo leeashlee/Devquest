@@ -1,0 +1,289 @@
+// ════════════════════════════════════════
+//  ACTIONS — User interactions & modals
+// ════════════════════════════════════════
+
+// ── Modal helpers ────────────────────────────────────────
+function openModal()  { document.getElementById('modal').style.display = 'flex'; }
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+function closeModalOverlay(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+function setModalContent(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  openModal();
+}
+
+// ── Navigation ───────────────────────────────────────────
+function prevWeek() { S.weekStart = addDays(S.weekStart, -7); render(); }
+function nextWeek() { S.weekStart = addDays(S.weekStart,  7); render(); }
+function goToday()  { S.weekStart = getMonday(new Date());    render(); }
+
+function setMobileDay(idx) { activeMobileDay = idx; renderCalendar(); }
+
+// ── Project collapse / selection ─────────────────────────
+function toggleProj(id) {
+  S.collapsedProj[id] = !S.collapsedProj[id];
+  S.selectedProjectId = id;
+  render();
+}
+
+function toggleCat(id) {
+  S.collapsedCat[id] = !S.collapsedCat[id];
+  render();
+}
+
+// ── Tasks ────────────────────────────────────────────────
+function addTask(pId, cId, ev) {
+  const text = ev.target.value.trim();
+  if (!text) return;
+
+  const priority = document.getElementById(`prio-${cId}`)?.value || 'Med';
+  const duration = Math.max(1, Number(document.getElementById(`dur-${cId}`)?.value) || 1);
+
+  findCategory(pId, cId).tasks.push({ id: S.nextId++, text, done: false, priority, duration });
+  render();
+  setTimeout(() => document.getElementById(`ti-${cId}`)?.focus(), 10);
+}
+
+function toggleTask(pId, cId, tId) {
+  const t = findTask(pId, cId, tId);
+  t.done = !t.done;
+  render();
+}
+
+function deleteTask(pId, cId, tId) {
+  const cat = findCategory(pId, cId);
+  cat.tasks = cat.tasks.filter(t => t.id !== tId);
+  render();
+}
+
+function changeTaskDuration(pId, cId, tId, ev) {
+  findTask(pId, cId, tId).duration = Math.max(1, Number(ev.target.value) || 1);
+  render();
+}
+
+function changeTaskPriority(pId, cId, tId, ev) {
+  findTask(pId, cId, tId).priority = ev.target.value;
+  render();
+}
+
+// ── Categories ───────────────────────────────────────────
+function openAddCategory(pId) {
+  setModalContent(`
+    <h2 class="vt pink" style="font-size:28px; margin-bottom:16px;">NEW CATEGORY</h2>
+    <input class="inp" id="catName" placeholder="Category Name"
+      style="margin-bottom:16px;" autofocus>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <label class="dim" style="font-size:12px;">Color</label>
+      <input class="inp" id="catColor" type="color" value="#8ba888"
+        style="width:70px; padding:4px;">
+    </div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn" style="color:var(--c2); border-color:var(--c2)"
+        onclick="confirmAddCategory(${pId})">CREATE</button>
+    </div>`);
+}
+
+function confirmAddCategory(pId) {
+  const name  = document.getElementById('catName').value.trim();
+  const color = document.getElementById('catColor').value;
+  if (!name) return;
+
+  findProject(pId).categories.push({ id: S.nextId++, name, color, tasks: [] });
+  closeModal();
+  render();
+}
+
+function openEditCategory(pId, cId) {
+  const proj = findProject(pId);
+  const cat  = findCategory(pId, cId);
+
+  setModalContent(`
+    <h2 class="vt pink" style="font-size:28px; margin-bottom:16px;">EDIT CATEGORY</h2>
+    <input class="inp" id="catName" value="${esc(cat.name)}"
+      placeholder="Category Name" style="margin-bottom:16px;" autofocus>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <label class="dim" style="font-size:12px;">Color</label>
+      <input class="inp" id="catColor" type="color"
+        value="${cat.color || proj.color || '#8ba888'}" style="width:70px; padding:4px;">
+    </div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn" style="color:var(--c1); border-color:var(--c1)"
+        onclick="saveCategoryEdits(${pId}, ${cId})">SAVE</button>
+    </div>`);
+}
+
+function saveCategoryEdits(pId, cId) {
+  const cat  = findCategory(pId, cId);
+  cat.name  = document.getElementById('catName').value;
+  cat.color = document.getElementById('catColor').value;
+  closeModal();
+  render();
+}
+
+function deleteCategory(pId, cId) {
+  if (!confirm('Delete category and all its tasks?')) return;
+  const proj       = findProject(pId);
+  proj.categories  = proj.categories.filter(c => c.id !== cId);
+  render();
+}
+
+// ── Projects ─────────────────────────────────────────────
+function openAddProject() {
+  setModalContent(`
+    <h2 class="vt pink" style="font-size:28px; margin-bottom:16px;">NEW PROJECT</h2>
+    <input class="inp" id="pjName" placeholder="Project Name"
+      style="margin-bottom:16px;" autofocus>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <label class="dim" style="font-size:12px;">Color</label>
+      <input class="inp" id="pjColor" type="color" value="#ff2271"
+        style="width:70px; padding:4px;">
+    </div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn" style="color:var(--c2); border-color:var(--c2)"
+        onclick="confirmAddProject()">CREATE</button>
+    </div>`);
+}
+
+function confirmAddProject() {
+  const name  = document.getElementById('pjName').value.trim();
+  const color = document.getElementById('pjColor')?.value || '#ff2271';
+  if (!name) return;
+
+  const newProject = { id: S.nextId++, name, color, categories: [], notes: '', milestones: [] };
+  S.projects.push(newProject);
+  S.selectedProjectId = newProject.id;
+  closeModal();
+  render();
+}
+
+// ── Project editing & milestones ─────────────────────────
+let editingMilestoneId = null;
+
+function openEditProject(pId) {
+  editingMilestoneId = null;
+  const p = findProject(pId);
+
+  const milestoneRows = (p.milestones || []).length
+    ? p.milestones.map(m => `
+        <div style="display:flex; align-items:center; justify-content:space-between;
+          gap:8px; margin-top:8px;">
+          <span style="flex:1; font-size:13px;">${m.date} – ${esc(m.title)}</span>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-ghost icon-btn"
+              onclick="event.stopPropagation(); startEditMilestone(${pId}, ${m.id})">✎</button>
+            <button class="btn btn-ghost icon-btn"
+              onclick="event.stopPropagation(); deleteMilestone(${pId}, ${m.id})">×</button>
+          </div>
+        </div>`).join('')
+    : '<div class="dim" style="font-size:13px; margin-top:8px;">No milestones yet.</div>';
+
+  setModalContent(`
+    <h2 class="vt pink" style="font-size:28px; margin-bottom:16px;">EDIT: ${esc(p.name)}</h2>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <label class="dim" style="font-size:12px;">Project Color</label>
+      <input class="inp" id="pjColor" type="color"
+        value="${p.color || '#ff2271'}" style="width:70px; padding:4px;">
+    </div>
+    <label class="dim" style="font-size:12px; display:block; margin-bottom:6px;">Sprint Notes</label>
+    <textarea class="inp" id="editNotes"
+      style="height:80px; margin-bottom:16px;">${esc(p.notes || '')}</textarea>
+    <label class="dim" style="font-size:12px; display:block; margin-bottom:8px;">
+      Add / Edit Milestone</label>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <input class="inp" id="mDate" type="date" style="flex:1;">
+      <input class="inp" id="mTitle" placeholder="Milestone title" style="flex:2;">
+    </div>
+    ${milestoneRows}
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+      <button class="btn" style="color:var(--c2);"
+        onclick="if(confirm('Delete project and all its tasks?')){
+          S.projects = S.projects.filter(x => x.id !== ${pId});
+          closeModal(); render(); }">DELETE PROJECT</button>
+      <div style="flex:1;"></div>
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn" style="color:var(--c1); border-color:var(--c1);"
+        onclick="saveProjectEdits(${pId})">SAVE</button>
+    </div>`);
+}
+
+function startEditMilestone(pId, mId) {
+  const milestone = findProject(pId).milestones?.find(m => m.id === mId);
+  if (!milestone) return;
+  editingMilestoneId = mId;
+  document.getElementById('mDate').value  = milestone.date;
+  document.getElementById('mTitle').value = milestone.title;
+}
+
+function deleteMilestone(pId, mId) {
+  const proj        = findProject(pId);
+  proj.milestones   = (proj.milestones || []).filter(m => m.id !== mId);
+  openEditProject(pId); // re-render modal in place
+}
+
+function saveProjectEdits(pId) {
+  const p     = findProject(pId);
+  p.notes     = document.getElementById('editNotes').value;
+  p.color     = document.getElementById('pjColor')?.value || p.color;
+
+  const date  = document.getElementById('mDate').value;
+  const title = document.getElementById('mTitle').value;
+
+  if (date && title) {
+    if (!p.milestones) p.milestones = [];
+    if (editingMilestoneId) {
+      const m = p.milestones.find(m => m.id === editingMilestoneId);
+      if (m) { m.date = date; m.title = title; }
+    } else {
+      p.milestones.push({ id: S.nextId++, date, title });
+    }
+  }
+
+  editingMilestoneId = null;
+  closeModal();
+  render();
+}
+
+// ── Calendar events ──────────────────────────────────────
+function openAddEvent(key, hour = null) {
+  const defaultTime = typeof hour === 'number' ? formatHour(hour) : '';
+
+  setModalContent(`
+    <h2 class="vt teal" style="font-size:28px; margin-bottom:16px;">
+      ADD EVENT: ${key}</h2>
+    <input class="inp" id="evTxt" placeholder="What are you working on?"
+      style="margin-bottom:10px;" autofocus>
+    <input class="inp" id="evTime" placeholder="Time (optional, e.g. 9am or 14:00)"
+      value="${defaultTime}" style="margin-bottom:10px;">
+    <input class="inp" id="evDuration" type="number" min="1" max="12" value="1"
+      style="margin-bottom:16px;" placeholder="Duration (hours)">
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn" style="color:var(--c1); border-color:var(--c1);"
+        onclick="confirmAddEvent('${key}')">ADD</button>
+    </div>`);
+}
+
+function confirmAddEvent(key) {
+  const text     = document.getElementById('evTxt').value.trim();
+  const time     = document.getElementById('evTime').value.trim();
+  const duration = Math.max(1, Number(document.getElementById('evDuration')?.value) || 1);
+  if (!text) return;
+
+  if (!S.events[key]) S.events[key] = [];
+  S.events[key].push({ id: String(S.nextId++), text, time, color: 'var(--c1)', duration });
+  closeModal();
+  render();
+}
+
+function deleteEvent(key, id) {
+  if (S.events[key]) {
+    S.events[key] = S.events[key].filter(e => e.id !== id);
+  }
+  render();
+}

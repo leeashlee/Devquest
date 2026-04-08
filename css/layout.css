@@ -1,0 +1,37 @@
+/* ════════════════════════════════════════
+   LAYOUT — Page structure & responsive grid
+   ════════════════════════════════════════ */
+
+/* Ensure panels never overflow their column */
+main, .bottom-split, .panel {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── App shell ── */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  min-height: calc(100vh - 60px);
+}
+
+.top-row {
+  width: 100%;
+}
+
+/* ── Two-column lower section ── */
+.bottom-split {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Responsive breakpoint ── */
+@media (max-width: 900px) {
+  .bottom-split {
+    grid-template-columns: 1fr;
+  }
+}

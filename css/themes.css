@@ -1,0 +1,135 @@
+/* ════════════════════════════════════════
+   THEMES — CSS custom properties
+   One block per theme × mode combination.
+   ════════════════════════════════════════ */
+
+/* Default fallback (same as cyber/night) */
+:root {
+  --bg:     #02020f;
+  --surf:   #07071c;
+  --surf2:  #0c0c26;
+  --border: #1a2560;
+  --c1:     #00f5d4;
+  --c2:     #ff2271;
+  --c3:     #ffe566;
+  --c4:     #a855f7;
+  --text:   #aac4e8;
+  --dim:    #3a5878;
+  --shadow: rgba(0, 245, 212, .05);
+}
+
+/* ── Cyber ── */
+[data-theme="cyber"][data-mode="night"] {
+  --bg:     #02020f;
+  --surf:   #07071c;
+  --surf2:  #0c0c26;
+  --border: #1a2560;
+  --c1:     #00f5d4;
+  --c2:     #ff2271;
+  --c3:     #ffe566;
+  --c4:     #a855f7;
+  --text:   #aac4e8;
+  --dim:    #3a5878;
+  --shadow: rgba(0, 245, 212, .05);
+}
+
+[data-theme="cyber"][data-mode="day"] {
+  --bg:     #d7ebff;
+  --surf:   #f4fbff;
+  --surf2:  #def3ff;
+  --border: #94c5e8;
+  --c1:     #0c73ff;
+  --c2:     #ff6fb3;
+  --c3:     #fbbf24;
+  --c4:     #8b5cf6;
+  --text:   #0f172a;
+  --dim:    #475569;
+  --shadow: rgba(15, 23, 42, .08);
+}
+
+/* ── Y2K ── */
+[data-theme="y2k"][data-mode="night"] {
+  --bg:     #2b0f25;
+  --surf:   #3d152f;
+  --surf2:  #2d0f22;
+  --border: #5c2f5a;
+  --c1:     #f472b6;
+  --c2:     #fb7185;
+  --c3:     #facc15;
+  --c4:     #a855f7;
+  --text:   #f8e7ff;
+  --dim:    #b69bcc;
+  --shadow: rgba(244, 114, 182, .15);
+}
+
+[data-theme="y2k"][data-mode="day"] {
+  --bg:     #ffe8f7;
+  --surf:   #fff2ff;
+  --surf2:  #fde4ff;
+  --border: #f0c6e3;
+  --c1:     #f472b6;
+  --c2:     #fb7185;
+  --c3:     #facc15;
+  --c4:     #7c3aed;
+  --text:   #42275a;
+  --dim:    #6d5d7b;
+  --shadow: rgba(124, 58, 237, .1);
+}
+
+/* ── Zen ── */
+[data-theme="zen"][data-mode="night"] {
+  --bg:     #2f3136;
+  --surf:   #3a3d42;
+  --surf2:  #33363b;
+  --border: #4f5359;
+  --c1:     #8cc3a3;
+  --c2:     #d29a75;
+  --c3:     #d6c586;
+  --c4:     #8c9aa9;
+  --text:   #e5e7eb;
+  --dim:    #94a3b8;
+  --shadow: rgba(0, 0, 0, .18);
+}
+
+[data-theme="zen"][data-mode="day"] {
+  --bg:     #eae6df;
+  --surf:   #f5f2eb;
+  --surf2:  #dfdcd5;
+  --border: #b5b1a8;
+  --c1:     #607c64;
+  --c2:     #9e6d5a;
+  --c3:     #a89f68;
+  --c4:     #5b6b7a;
+  --text:   #3e423f;
+  --dim:    #7a7d78;
+  --shadow: rgba(0, 0, 0, .05);
+}
+
+/* ── Cottagecore ── */
+[data-theme="cottagecore"][data-mode="night"] {
+  --bg:     #3c382f;
+  --surf:   #49443d;
+  --surf2:  #413d35;
+  --border: #5a5449;
+  --c1:     #9fbf8b;
+  --c2:     #d39998;
+  --c3:     #c8b57d;
+  --c4:     #9f8f7f;
+  --text:   #e7e4db;
+  --dim:    #b0a999;
+  --shadow: rgba(0, 0, 0, .18);
+}
+
+[data-theme="cottagecore"][data-mode="day"] {
+  --bg:     #fdf6e3;
+  --surf:   #fffbf0;
+  --surf2:  #f4ecd8;
+  --border: #d4c4a8;
+  --c1:     #8a9a5b;
+  --c2:     #c87a7a;
+  --c3:     #d4a373;
+  --c4:     #a38771;
+  --text:   #4a3f35;
+  --dim:    #8c7a6b;
+  --shadow: rgba(138, 154, 91, .1);
+}
