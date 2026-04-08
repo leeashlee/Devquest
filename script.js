@@ -2,6 +2,7 @@
     //  STATE & DATA MODEL
     // ═══════════════════════════════════════════════
     const DAY_NAMES = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const HOUR_HEIGHT = 50;
     let activeMobileDay = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
 
     let S = {
@@ -10,20 +11,20 @@
       selectedProjectId: 1,
       projects: [
         {
-          id: 1, name: 'Aureland', color: '#8ba888', notes: 'Core game loop and worldbuilding.',
+          id: 1, name: 'Project Test', color: '#8ba888', notes: 'Core game loop and worldbuilding.',
           milestones: [{ id: 101, date: '2026-06-01', title: 'Vertical Slice Demo' }],
           categories: [
             {
-              id: 10, name: 'Dewdrop Hamlet', color: '#8ba888',
+              id: 10, name: 'Category test 1', color: '#8ba888',
               tasks: [
-                { id: 100, text: 'Cottage interior sketches', done: false, priority: 'Med' },
-                { id: 101, text: 'NPC dialogue logic', done: true, priority: 'High' }
+                { id: 100, text: 'Task 1', done: false, priority: 'Med', duration: 2 },
+                { id: 101, text: 'Task 2', done: true, priority: 'High', duration: 1 }
               ]
             },
             {
-              id: 11, name: 'Noir Stella', color: '#ff2271',
+              id: 11, name: 'Category test 2', color: '#ff2271',
               tasks: [
-                { id: 110, text: 'Lighting system setup', done: false, priority: 'High' }
+                { id: 110, text: 'Task 3', done: false, priority: 'High', duration: 3 }
               ]
             }
           ]
@@ -97,6 +98,34 @@
       const label = h % 12 === 0 ? 12 : h % 12;
       return `${label}${h < 12 ? 'am' : 'pm'}`;
     }
+    function getEventDuration(ev) {
+      return Math.max(1, Number(ev.duration) || 1);
+    }
+    function computeTimedLayout(evts) {
+      const timedEvents = evts.filter(ev => {
+        const hour = parseEventHour(ev.time);
+        return hour !== null && hour >= 6 && hour <= 22;
+      }).sort((a, b) => {
+        const aStart = parseEventHour(a.time) || 6;
+        const bStart = parseEventHour(b.time) || 6;
+        return aStart - bStart;
+      });
+
+      const columns = [];
+      return timedEvents.map(ev => {
+        const start = parseEventHour(ev.time) || 6;
+        const duration = getEventDuration(ev);
+        const end = start + duration;
+        let lane = columns.findIndex(lastEnd => start >= lastEnd);
+        if (lane === -1) {
+          lane = columns.length;
+          columns.push(end);
+        } else {
+          columns[lane] = end;
+        }
+        return { ev, start, duration, end, lane };
+      });
+    }
     function renderCalendar() {
       const ws = S.weekStart;
       document.getElementById('weekLabel').textContent = `${ws.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${addDays(ws, 6).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
@@ -111,60 +140,63 @@
         const evts = S.events[key] || [];
         const today = isToday(day);
         const isMobActive = i === activeMobileDay ? ' mobile-active' : '';
-        const buckets = { all: [] };
-        hours.forEach(h => buckets[h] = []);
-        evts.forEach(ev => {
-          const hour = parseEventHour(ev.time);
-          if (hour !== null && hour >= 6 && hour <= 22) {
-            buckets[hour].push(ev);
-          } else {
-            buckets.all.push(ev);
-          }
-        });
 
-        const hourRows = [];
-        if (buckets.all.length) {
-          hourRows.push(`
-        <div class="hour-row no-label" ondragover="allowDrop(event)" ondrop="dropTask(event, '${key}')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-          <div class="hour-label"></div>
-          <div class="hour-events untimed-events">${buckets.all.map(ev => `
-            <div class="ev-chip" style="color:${ev.color}">
-              <span style="flex:1; line-height:1.3;">${ev.time ? `<strong>${esc(ev.time)}</strong> ` : ''}${esc(ev.text)}</span>
-              <button class="btn-ghost icon-btn dim" onclick="event.stopPropagation(); deleteEvent('${key}','${ev.id}')">×</button>
-            </div>
-          `).join('')}</div>
-          <div class="slot-add-area" onclick="event.stopPropagation(); openAddEvent('${key}', null)">Add event</div>
-        </div>`);
-        }
+        const timedWithLayout = computeTimedLayout(evts);
+        const untimedEvents = evts.filter(ev => parseEventHour(ev.time) === null);
+        const columnCount = Math.max(1, Math.max(1, ...timedWithLayout.map(item => item.lane + 1)));
 
-        hours.forEach(hour => {
-          hourRows.push(`
-        <div class="hour-row" ondragover="allowDrop(event)" ondrop="dropTask(event, '${key}', ${hour})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-          <div class="hour-label">${formatHour(hour)}</div>
-          <div class="hour-events">${buckets[hour].map(ev => `
-            <div class="ev-chip" style="color:${ev.color}">
-              <span style="flex:1; line-height:1.3;">${ev.time ? `<strong>${esc(ev.time)}</strong> ` : ''}${esc(ev.text)}</span>
-              <button class="btn-ghost icon-btn dim" onclick="event.stopPropagation(); deleteEvent('${key}','${ev.id}')">×</button>
+        const eventBlocks = timedWithLayout.map(item => {
+          const top = (item.start - 6) * HOUR_HEIGHT + 4;
+          const height =Math.max(HOUR_HEIGHT - 8, item.duration * HOUR_HEIGHT - 8);
+          const left = `calc(34px + ${item.lane * 10}px)`;
+          const width = `calc(${100 / columnCount}% - 42px - ${item.lane * 10}px)`;
+          return `
+          <div class="ev-block" style="top:${top}px; height:${height}px; left:${left}; width:${width}; color:${item.ev.color};" draggable="true" ondragstart="dragStartEvent(event, '${key}', '${item.ev.id}')">
+            <div class="ev-header">
+              <span class="ev-title">${esc(item.ev.text)}</span>
+              <button class="btn-ghost icon-btn dim" onclick="event.stopPropagation(); deleteEvent('${key}','${item.ev.id}')">×</button>
             </div>
-          `).join('')}</div>
-          <div class="slot-add-area" onclick="event.stopPropagation(); openAddEvent('${key}', ${hour})">Add event</div>
-        </div>`);
-        });
+            <div class="resize-handle" onmousedown="startResizeEvent(event, '${key}', '${item.ev.id}')" title="Drag to resize"></div>
+          </div>`;
+        }).join('');
+
+        const untimedHtml = untimedEvents.length ? untimedEvents.map(ev => `
+          <div class="ev-chip" style="color:${ev.color}">
+            <span style="flex:1; line-height:1.3;">${esc(ev.text)}</span>
+            <button class="btn-ghost icon-btn dim" onclick="event.stopPropagation(); deleteEvent('${key}','${ev.id}')">×</button>
+          </div>`).join('') : '';
+
+        const hourRows = hours.map(hour => {
+          const occupied = timedWithLayout.some(item => hour >= item.start && hour < item.start + item.duration);
+          return `
+          <div class="hour-row" ondragover="allowDrop(event)" ondrop="dropTask(event, '${key}', ${hour})" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="hour-label">${formatHour(hour)}</div>
+            ${occupied ? '' : `<div class="slot-add-area" onclick="event.stopPropagation(); openAddEvent('${key}', ${hour})">Add event</div>`}
+          </div>`;
+        }).join('');
 
         mobPickHtml += `<button class="mob-day-btn ${i === activeMobileDay ? 'active' : ''}" onclick="setMobileDay(${i})">${DAY_NAMES[i]} ${day.getDate()}</button>`;
 
         calHtml += `
-      <div class="day-col${today ? ' day-today' : ''}${isMobActive}" 
-           ondragover="allowDrop(event)" ondrop="dropTask(event, '${key}')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+      <div class="day-col${today ? ' day-today' : ''}${isMobActive}" ondragover="allowDrop(event)" ondrop="dropTask(event, '${key}')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
         <div class="day-hdr">
           <div class="day-name">${DAY_NAMES[i]}</div>
           <div class="day-num">${day.getDate()}</div>
         </div>
         <div class="day-events">
-          ${hourRows.join('')}
+          <div class="slot-section anytime-section">
+            <div class="slot-label">Anytime</div>
+            ${untimedHtml}
+            <div class="slot-add-area" onclick="event.stopPropagation(); openAddEvent('${key}', null)">Add event</div>
+          </div>
+          <div class="timeline">
+            ${hourRows}
+            ${eventBlocks}
+          </div>
         </div>
       </div>`;
       }
+
       document.getElementById('calGrid').innerHTML = calHtml;
       document.getElementById('mobileDayPicker').innerHTML = mobPickHtml;
     }
@@ -218,9 +250,10 @@
               for (const t of cat.tasks) {
                 const prioColor = t.priority === 'High' ? 'var(--c2)' : t.priority === 'Med' ? 'var(--c3)' : 'var(--c1)';
                 html += `
-              <div class="task-row${t.done ? ' done' : ''}" draggable="true" ondragstart="dragStart(event, '${esc(t.text)}', '${proj.color}')">
+              <div class="task-row${t.done ? ' done' : ''}" draggable="true" ondragstart="dragStart(event, '${esc(t.text)}', '${proj.color}', ${t.duration || 1})">
                 <input type="checkbox" style="width:16px;height:16px;cursor:pointer;" ${t.done ? 'checked' : ''} onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
                 <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
+                <input class="duration-input" type="number" min="1" max="12" value="${t.duration || 1}" onchange="changeTaskDuration(${proj.id}, ${cat.id}, ${t.id}, event)">
                 <select class="priority-select" style="border-color:${prioColor}; color:${prioColor};" onchange="changeTaskPriority(${proj.id}, ${cat.id}, ${t.id}, event)">
                   <option value="High" ${t.priority === 'High' ? 'selected' : ''}>High</option>
                   <option value="Med" ${t.priority === 'Med' ? 'selected' : ''}>Med</option>
@@ -233,6 +266,7 @@
             <div style="padding:8px 14px 8px 34px; display:flex; gap:8px; align-items:center;">
               <input class="inp" id="ti-${cat.id}" placeholder="+ new task [Enter]" style="flex:1; border-color:transparent; padding:4px;" 
                 onkeydown="if(event.key==='Enter') addTask(${proj.id}, ${cat.id}, event)">
+              <input class="duration-input" id="dur-${cat.id}" type="number" min="1" max="12" value="1" style="width:70px; padding:6px;">
               <select class="priority-select" id="prio-${cat.id}">
                 <option value="High">High</option>
                 <option value="Med" selected>Med</option>
@@ -267,8 +301,15 @@
     // ═══════════════════════════════════════════════
     //  DRAG & DROP TO CALENDAR
     // ═══════════════════════════════════════════════
-    function dragStart(ev, text, color) {
-      ev.dataTransfer.setData("text/plain", JSON.stringify({ text, color }));
+    let resizingEvent = null;
+    let resizeStartY = 0;
+    let resizeInitialDuration = 1;
+
+    function dragStart(ev, text, color, duration = 1) {
+      ev.dataTransfer.setData("text/plain", JSON.stringify({ text, color, duration }));
+    }
+    function dragStartEvent(ev, dateKey, eventId) {
+      ev.dataTransfer.setData("text/plain", JSON.stringify({ moveEvent: true, dateKey, eventId }));
     }
     function allowDrop(ev) { ev.preventDefault(); }
     function dragEnter(ev) { ev.currentTarget.classList.add('drag-over'); }
@@ -280,10 +321,61 @@
       try {
         const data = JSON.parse(ev.dataTransfer.getData("text/plain"));
         if (!S.events[dateKey]) S.events[dateKey] = [];
+        if (data.moveEvent) {
+          const sourceEvents = S.events[data.dateKey] || [];
+          const movingIndex = sourceEvents.findIndex(event => event.id === data.eventId);
+          if (movingIndex !== -1) {
+            const [movedEvent] = sourceEvents.splice(movingIndex, 1);
+            movedEvent.time = typeof hour === 'number' ? formatHour(hour) : '';
+            S.events[dateKey].push(movedEvent);
+            render();
+          }
+          return;
+        }
         const time = typeof hour === 'number' ? formatHour(hour) : '';
-        S.events[dateKey].push({ id: String(S.nextId++), text: data.text, time, color: data.color });
+        S.events[dateKey].push({ id: String(S.nextId++), text: data.text, time, color: data.color, duration: Number(data.duration) || 1 });
         render();
       } catch (e) { }
+    }
+
+    function startResizeEvent(ev, dateKey, eventId) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      const dayEvents = S.events[dateKey] || [];
+      const targetEvent = dayEvents.find(event => event.id === eventId);
+      if (!targetEvent) return;
+      resizingEvent = { dateKey, eventId };
+      resizeStartY = ev.clientY;
+      resizeInitialDuration = getEventDuration(targetEvent);
+      window.addEventListener('pointermove', handleResizeMove);
+      window.addEventListener('pointerup', handleResizeEnd);
+    }
+
+    function handleResizeMove(ev) {
+      if (!resizingEvent) return;
+      const deltaHours = Math.round((ev.clientY - resizeStartY) / HOUR_HEIGHT);
+      const dayEvents = S.events[resizingEvent.dateKey] || [];
+      const layout = computeTimedLayout(dayEvents);
+      const target = layout.find(item => item.ev.id === resizingEvent.eventId);
+      if (!target) return;
+      const nextInLane = layout
+        .filter(item => item.lane === target.lane && item.start > target.start)
+        .sort((a, b) => a.start - b.start)[0];
+      const maxDuration = nextInLane ? nextInLane.start - target.start : 22 - target.start;
+      const newDuration = Math.min(Math.max(1, resizeInitialDuration + deltaHours), Math.max(1, maxDuration));
+      const targetEvent = dayEvents.find(event => event.id === resizingEvent.eventId);
+      if (targetEvent && getEventDuration(targetEvent) !== newDuration) {
+        targetEvent.duration = newDuration;
+        renderCalendar();
+      }
+    }
+
+    function handleResizeEnd() {
+      if (!resizingEvent) return;
+      window.removeEventListener('pointermove', handleResizeMove);
+      window.removeEventListener('pointerup', handleResizeEnd);
+      resizingEvent = null;
+      save();
     }
 
     function hourRowAdd(ev, dateKey, hour = null) {
@@ -306,11 +398,17 @@
       const text = inp.value.trim();
       if (!text) return;
       const priority = document.getElementById(`prio-${cId}`)?.value || 'Med';
+      const duration = Number(document.getElementById(`dur-${cId}`)?.value) || 1;
       const proj = S.projects.find(p => p.id === pId);
       const cat = proj.categories.find(c => c.id === cId);
-      cat.tasks.push({ id: S.nextId++, text, done: false, priority });
+      cat.tasks.push({ id: S.nextId++, text, done: false, priority, duration: Math.max(1, duration) });
       render();
       setTimeout(() => document.getElementById(`ti-${cId}`)?.focus(), 10);
+    }
+    function changeTaskDuration(pId, cId, tId, ev) {
+      const t = S.projects.find(p => p.id === pId).categories.find(c => c.id === cId).tasks.find(x => x.id === tId);
+      t.duration = Math.max(1, Number(ev.target.value) || 1);
+      render();
     }
     function changeTaskPriority(pId, cId, tId, ev) {
       const t = S.projects.find(p => p.id === pId).categories.find(c => c.id === cId).tasks.find(x => x.id === tId);
@@ -412,7 +510,8 @@
       document.getElementById('modalContent').innerHTML = `
     <h2 class="vt teal" style="font-size:28px; margin-bottom:16px;">ADD EVENT: ${key}</h2>
     <input class="inp" id="evTxt" placeholder="Task description..." style="margin-bottom:10px;" autofocus>
-    <input class="inp" id="evTime" placeholder="Time (optional)" value="${defaultTime}" style="margin-bottom:16px;">
+    <input class="inp" id="evTime" placeholder="Time (optional)" value="${defaultTime}" style="margin-bottom:10px;">
+    <input class="inp" id="evDuration" type="number" min="1" max="12" value="1" style="margin-bottom:16px;" placeholder="Duration (hours)">
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button class="btn dim" onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1)" onclick="confirmAddEvent('${key}')">ADD</button>
@@ -423,9 +522,10 @@
     function confirmAddEvent(key) {
       const text = document.getElementById('evTxt').value.trim();
       const time = document.getElementById('evTime').value.trim();
+      const duration = Math.max(1, Number(document.getElementById('evDuration')?.value) || 1);
       if (text) {
         if (!S.events[key]) S.events[key] = [];
-        S.events[key].push({ id: String(S.nextId++), text, time, color: 'var(--c1)' });
+        S.events[key].push({ id: String(S.nextId++), text, time, color: 'var(--c1)', duration });
         closeModal(); render();
       }
     }
