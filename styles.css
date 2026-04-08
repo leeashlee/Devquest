@@ -218,9 +218,9 @@
     .btn-ghost {
       border: none;
       opacity: .75;
-      font-size: 18px;
+      font-size: 16px;
       padding: 4px 8px;
-      min-width: 20 px;
+      min-width: 16 px;
     }
 
     .btn-ghost:hover {
