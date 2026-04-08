@@ -421,26 +421,19 @@
     .ev-block {
       position: absolute;
       border-radius: 3px;
-      padding: 4px 6px;
+      padding: 3px 6px;
       background: rgba(128, 128, 128, .1);
       border-left: 3px solid currentColor;
       box-shadow: none;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      justify-content: flex-start;
+      gap: 0;
       z-index: 2;
       cursor: grab;
       transition: background .12s ease;
       box-sizing: border-box;
       overflow: hidden;
-    }
-
-    .ev-block:hover {
-      background: rgba(128, 128, 128, .18);
-    }
-
-    .ev-block:active {
-      cursor: grabbing;
     }
 
     .ev-block + .ev-block {
@@ -449,30 +442,36 @@
 
     .ev-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 4px;
       width: 100%;
-      min-height: 0;
+      overflow: hidden;
     }
 
     .ev-title {
       flex: 1;
       min-width: 0;
-      font-size: 13px;
+      font-size: 11px;
       line-height: 1.3;
       letter-spacing: 0;
       color: inherit;
-      word-break: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ev-block .icon-btn {
-      width: 18px;
-      height: 18px;
-      font-size: 14px;
+      width: 16px;
+      height: 16px;
+      font-size: 13px;
       padding: 0;
       opacity: 0;
       flex-shrink: 0;
+    }
+
+    .ev-block:hover {
+      background: rgba(128, 128, 128, .18);
     }
 
     .ev-block:hover .icon-btn {
@@ -481,6 +480,10 @@
 
     .ev-block .icon-btn:hover {
       opacity: 1;
+    }
+
+    .ev-block:active {
+      cursor: grabbing;
     }
 
     .resize-handle {

@@ -148,8 +148,8 @@
         const eventBlocks = timedWithLayout.map(item => {
           const top = (item.start - 6) * HOUR_HEIGHT + 4;
           const height =Math.max(HOUR_HEIGHT - 8, item.duration * HOUR_HEIGHT - 8);
-          const left = `calc(34px + ${item.lane * 10}px)`;
-          const width = `calc(${100 / columnCount}% - 42px - ${item.lane * 10}px)`;
+          const left = `calc(44px + ${item.lane * 10}px)`;
+          const width = `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
           return `
           <div class="ev-block" style="top:${top}px; height:${height}px; left:${left}; width:${width}; color:${item.ev.color};" draggable="true" ondragstart="dragStartEvent(event, '${key}', '${item.ev.id}')">
             <div class="ev-header">
