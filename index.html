@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEVQUEST — Game Dev Project Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body data-theme="cyber" data-mode="night">
+
+  <header
+    style="border-bottom:1px solid var(--border);background:var(--surf2);padding:0 20px;position:sticky;top:0;z-index:50;">
+    <div style="display:flex;align-items:center;justify-content:space-between;height:60px;">
+      <div class="vt teal" style="font-size:36px;letter-spacing:4px;">DEVQUEST<span style="opacity:0.5">_</span></div>
+      <div style="display:flex;gap:10px; align-items:center;">
+        <button id="modeToggle" class="btn btn-ghost icon-btn" onclick="toggleMode()"
+          title="Toggle day/night">☀️</button>
+        <button class="btn btn-ghost" onclick="openSettings()">⚙️ SETTINGS</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <section class="panel top-row">
+      <div class="ph">
+        <div>
+          <span class="vt yellow ph-title">PROJECT MASTERY</span>
+          <div id="projectLabel" class="dim" style="font-size:14px; margin-top:4px;">Project: Aureland</div>
+        </div>
+        <span id="taskCount" class="dim" style="font-size:14px;">0 / 0 tasks</span>
+      </div>
+      <div style="padding: 20px;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;">
+          <span class="dim" style="letter-spacing:2px;">PROJECT COMPLETION</span>
+          <span class="vt teal" id="bigPct" style="font-size:42px; line-height:1;">0%</span>
+        </div>
+        <div class="prog-track" style="height: 16px;">
+          <div class="prog-fill" id="overallBar" style="width:0%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="bottom-split">
+      <section class="panel" style="display:flex;flex-direction:column;">
+        <div class="ph">
+          <span class="vt teal ph-title">WEEKLY SCHEDULE</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-ghost" onclick="prevWeek()">◀</button>
+            <span id="weekLabel" class="dim" style="font-size:14px;"></span>
+            <button class="btn btn-ghost" onclick="nextWeek()">▶</button>
+            <button class="btn" style="color:var(--c1); border-color:var(--c1)" onclick="goToday()">TODAY</button>
+          </div>
+        </div>
+
+        <div class="mobile-day-picker" id="mobileDayPicker"></div>
+        <div id="calGrid" class="cal-wrapper"></div>
+      </section>
+
+      <section class="panel" style="display:flex;flex-direction:column; max-height: 800px;">
+        <div class="ph">
+          <span class="vt pink ph-title">WORK LOG</span>
+          <button class="btn" style="color:var(--c2); border-color:var(--c2)" onclick="openAddProject()">+
+            PROJECT</button>
+        </div>
+        <div id="tasksList" style="flex:1; overflow-y:auto; padding-bottom: 20px;"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <div id="modal" class="modal-overlay" style="display:none;" onclick="closeModalOverlay(event)">
+    <div class="modal-box" id="modalContent" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
