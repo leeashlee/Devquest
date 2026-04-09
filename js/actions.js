@@ -65,7 +65,21 @@ function changeTaskDuration(pId, cId, tId, ev) {
 }
 
 function changeTaskPriority(pId, cId, tId, ev) {
-  findTask(pId, cId, tId).priority = ev.target.value;
+  const newPriority = ev.target.value;
+  findTask(pId, cId, tId).priority = newPriority;
+
+  // Keep any calendar events that were dropped from this task in sync
+  for (const dayEvents of Object.values(S.events)) {
+    for (const calEv of dayEvents) {
+      if (calEv.taskRef &&
+          calEv.taskRef.pId === pId &&
+          calEv.taskRef.cId === cId &&
+          calEv.taskRef.tId === tId) {
+        calEv.priority = newPriority;
+      }
+    }
+  }
+
   render();
 }
 

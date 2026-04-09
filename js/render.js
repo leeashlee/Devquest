@@ -284,7 +284,7 @@ function renderTasks() {
             html += `
               <div class="task-row${t.done ? ' done' : ''}"
                 draggable="true"
-                ondragstart="dragStart(event, '${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}')">
+                ondragstart="dragStart(event, '${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}', ${proj.id}, ${cat.id}, ${t.id})">
                 <input type="checkbox" style="width:16px; height:16px; cursor:pointer;"
                   ${t.done ? 'checked' : ''}
                   onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
