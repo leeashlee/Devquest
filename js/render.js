@@ -116,6 +116,7 @@ function renderCalendar() {
           draggable="true"
           ondragstart="dragStartEvent(event, '${key}', '${ev.id}')">
           <div class="ev-header">
+            ${prioDot}
             <span class="ev-title" title="${esc(ev.text)}">${esc(ev.text)}</span>
             <button class="icon-btn dim"
               onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
