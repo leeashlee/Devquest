@@ -3,8 +3,8 @@
 // ════════════════════════════════════════
 
 // ── Drag from task list → calendar ───────────────────────
-function dragStart(ev, text, color, duration = 1) {
-  ev.dataTransfer.setData('text/plain', JSON.stringify({ text, color, duration }));
+function dragStart(ev, text, color, duration = 1, priority = null, pId = null, cId = null, tId = null) {
+  ev.dataTransfer.setData('text/plain', JSON.stringify({ text, color, duration, priority, pId, cId, tId }));
 }
 
 // ── Drag existing calendar event to a new slot ────────────
@@ -49,6 +49,9 @@ function dropTask(ev, dateKey, hour = null) {
       color:    data.color,
       time:     hour !== null ? formatHour(hour) : '',
       duration: data.duration || 1,
+      priority: data.priority || null,
+      // Store task reference so priority stays live when task changes
+      taskRef:  (data.pId != null) ? { pId: data.pId, cId: data.cId, tId: data.tId } : null,
     });
   }
 

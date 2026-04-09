@@ -103,30 +103,45 @@ function renderCalendar() {
       const height = Math.max(HOUR_HEIGHT - 8, item.duration * HOUR_HEIGHT - 8);
       const left   = `calc(44px + ${item.lane * 10}px)`;
       const width  = `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
+      const ev     = item.ev;
+      const prioDot = ev.priority
+        ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
+            background:${ev.priority === 'High' ? 'var(--c2)' : ev.priority === 'Med' ? 'var(--c3)' : 'var(--c1)'};
+            margin-right:3px;" title="${ev.priority} priority"></span>`
+        : '';
 
       return `
         <div class="ev-block"
-          style="top:${top}px; height:${height}px; left:${left}; width:${width}; color:${item.ev.color};"
+          style="top:${top}px; height:${height}px; left:${left}; width:${width}; color:${ev.color};"
           draggable="true"
-          ondragstart="dragStartEvent(event, '${key}', '${item.ev.id}')">
+          ondragstart="dragStartEvent(event, '${key}', '${ev.id}')">
           <div class="ev-header">
-            <span class="ev-title">${esc(item.ev.text)}</span>
+            ${prioDot}<span class="ev-title">${esc(ev.text)}</span>
             <button class="icon-btn dim"
-              onclick="event.stopPropagation(); deleteEvent('${key}', '${item.ev.id}')">×</button>
+              onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
           </div>
           <div class="resize-handle"
-            onmousedown="startResizeEvent(event, '${key}', '${item.ev.id}')"
+            onmousedown="startResizeEvent(event, '${key}', '${ev.id}')"
             title="Drag to resize"></div>
         </div>`;
     }).join('');
 
     // Untimed (anytime) chips
-    const untimedHtml = untimedEvts.map(ev => `
+    const untimedHtml = untimedEvts.map(ev => {
+      const prioDot = ev.priority
+        ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0;
+            display:inline-block; margin-top:4px;
+            background:${ev.priority === 'High' ? 'var(--c2)' : ev.priority === 'Med' ? 'var(--c3)' : 'var(--c1)'};"
+            title="${ev.priority} priority"></span>`
+        : '';
+      return `
       <div class="ev-chip" style="color:${ev.color}">
+        ${prioDot}
         <span style="flex:1; line-height:1.3;">${esc(ev.text)}</span>
         <button class="btn-ghost icon-btn dim"
           onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 
     // Background hour rows
     const hourRows = hours.map(hour => {
@@ -269,16 +284,14 @@ function renderTasks() {
             html += `
               <div class="task-row${t.done ? ' done' : ''}"
                 draggable="true"
-                ondragstart="dragStart(event, '${esc(t.text)}', '${proj.color}', ${t.duration || 1})">
+                ondragstart="dragStart(event, '${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}')">
                 <input type="checkbox" style="width:16px; height:16px; cursor:pointer;"
                   ${t.done ? 'checked' : ''}
                   onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
+                <span style="width:8px; height:8px; border-radius:50%; background:${prioColor};
+                  flex-shrink:0; display:inline-block;" title="${t.priority} priority"></span>
                 <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
-                <input class="duration-input" type="number" min="1" max="12"
-                  value="${t.duration || 1}"
-                  onchange="changeTaskDuration(${proj.id}, ${cat.id}, ${t.id}, event)">
                 <select class="priority-select"
-                  style="border-color:${prioColor}; color:${prioColor};"
                   onchange="changeTaskPriority(${proj.id}, ${cat.id}, ${t.id}, event)">
                   <option value="High" ${t.priority === 'High' ? 'selected' : ''}>High</option>
                   <option value="Med"  ${t.priority === 'Med'  ? 'selected' : ''}>Med</option>
@@ -296,8 +309,6 @@ function renderTasks() {
                 placeholder="+ new task [Enter]"
                 style="flex:1; border-color:transparent; padding:4px;"
                 onkeydown="if(event.key==='Enter') addTask(${proj.id}, ${cat.id}, event)">
-              <input class="duration-input" id="dur-${cat.id}"
-                type="number" min="1" max="12" value="1" style="width:70px; padding:6px;">
               <select class="priority-select" id="prio-${cat.id}">
                 <option value="High">High</option>
                 <option value="Med" selected>Med</option>

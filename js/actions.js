@@ -253,6 +253,20 @@ function saveProjectEdits(pId) {
 function openAddEvent(key, hour = null) {
   const defaultTime = typeof hour === 'number' ? formatHour(hour) : '';
 
+  // Preset palette — distinct, readable on both light and dark themes
+  const swatches = [
+    '#00f5d4', '#ff2271', '#ffe566', '#a855f7',
+    '#3b82f6', '#f97316', '#10b981', '#f472b6',
+  ];
+  const swatchHtml = swatches.map(c => `
+    <div onclick="selectEventColor('${c}', this)"
+      style="width:22px; height:22px; border-radius:50%; background:${c};
+        cursor:pointer; border:2px solid transparent; flex-shrink:0;
+        transition:transform .1s, border-color .1s;"
+      onmouseover="this.style.transform='scale(1.2)'"
+      onmouseout="this.style.transform='scale(1)'">
+    </div>`).join('');
+
   setModalContent(`
     <h2 class="vt teal" style="font-size:28px; margin-bottom:16px;">
       ADD EVENT: ${key}</h2>
@@ -261,22 +275,50 @@ function openAddEvent(key, hour = null) {
     <input class="inp" id="evTime" placeholder="Time (optional, e.g. 9am or 14:00)"
       value="${defaultTime}" style="margin-bottom:10px;">
     <input class="inp" id="evDuration" type="number" min="1" max="12" value="1"
-      style="margin-bottom:16px;" placeholder="Duration (hours)">
+      style="margin-bottom:14px;" placeholder="Duration (hours)">
+    <div style="margin-bottom:16px;">
+      <div class="dim" style="font-size:12px; letter-spacing:1px; margin-bottom:8px;">
+        EVENT COLOUR</div>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        ${swatchHtml}
+        <input type="color" id="evColorCustom" value="${swatches[0]}"
+          oninput="selectEventColor(this.value, null)"
+          style="width:26px; height:26px; border:none; background:none;
+            cursor:pointer; padding:0; border-radius:50%;"
+          title="Custom colour">
+      </div>
+      <input type="hidden" id="evColor" value="${swatches[0]}">
+    </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button class="btn dim" onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1);"
         onclick="confirmAddEvent('${key}')">ADD</button>
     </div>`);
+
+  // Pre-select the first swatch
+  const firstSwatch = document.querySelector(
+    '#modalContent [onclick^="selectEventColor"]');
+  if (firstSwatch) firstSwatch.style.borderColor = '#fff';
+}
+
+function selectEventColor(hex, swatchEl) {
+  document.getElementById('evColor').value = hex;
+  document.getElementById('evColorCustom').value = hex;
+  // Reset all swatch borders then highlight the chosen one
+  document.querySelectorAll('#modalContent [onclick^="selectEventColor"]')
+    .forEach(el => el.style.borderColor = 'transparent');
+  if (swatchEl) swatchEl.style.borderColor = '#fff';
 }
 
 function confirmAddEvent(key) {
   const text     = document.getElementById('evTxt').value.trim();
   const time     = document.getElementById('evTime').value.trim();
   const duration = Math.max(1, Number(document.getElementById('evDuration')?.value) || 1);
+  const color    = document.getElementById('evColor')?.value || 'var(--c1)';
   if (!text) return;
 
   if (!S.events[key]) S.events[key] = [];
-  S.events[key].push({ id: String(S.nextId++), text, time, color: 'var(--c1)', duration });
+  S.events[key].push({ id: String(S.nextId++), text, time, color, duration });
   closeModal();
   render();
 }
