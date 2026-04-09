@@ -116,7 +116,7 @@ function renderCalendar() {
           draggable="true"
           ondragstart="dragStartEvent(event, '${key}', '${ev.id}')">
           <div class="ev-header">
-            ${prioDot}<span class="ev-title">${esc(ev.text)}</span>
+            <span class="ev-title" title="${esc(ev.text)}">${esc(ev.text)}</span>
             <button class="icon-btn dim"
               onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
           </div>
@@ -137,7 +137,7 @@ function renderCalendar() {
       return `
       <div class="ev-chip" style="color:${ev.color}">
         ${prioDot}
-        <span style="flex:1; line-height:1.3;">${esc(ev.text)}</span>
+        <span style="flex:1; line-height:1.3;" title="${esc(ev.text)}">${esc(ev.text)}</span>
         <button class="btn-ghost icon-btn dim"
           onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
       </div>`;
