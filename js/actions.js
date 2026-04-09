@@ -64,18 +64,21 @@ function changeTaskDuration(pId, cId, tId, ev) {
   render();
 }
 
-function changeTaskPriority(pId, cId, tId, ev) {
-  const newPriority = ev.target.value;
-  findTask(pId, cId, tId).priority = newPriority;
+function cycleTaskPriority(pId, cId, tId) {
+  const t = findTask(pId, cId, tId);
+  if (!t) return;
 
-  // Keep any calendar events that were dropped from this task in sync
+  const order = ['High', 'Med', 'Low'];
+  t.priority  = order[(order.indexOf(t.priority) + 1) % order.length];
+
+  // Sync linked calendar events — Number() guards against string/number mismatches after JSON round-trips
   for (const dayEvents of Object.values(S.events)) {
     for (const calEv of dayEvents) {
       if (calEv.taskRef &&
-          calEv.taskRef.pId === pId &&
-          calEv.taskRef.cId === cId &&
-          calEv.taskRef.tId === tId) {
-        calEv.priority = newPriority;
+          Number(calEv.taskRef.pId) === Number(pId) &&
+          Number(calEv.taskRef.cId) === Number(cId) &&
+          Number(calEv.taskRef.tId) === Number(tId)) {
+        calEv.priority = t.priority;
       }
     }
   }

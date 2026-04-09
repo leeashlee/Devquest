@@ -106,7 +106,7 @@ function renderCalendar() {
       const ev     = item.ev;
       const prioDot = ev.priority
         ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
-            background:${ev.priority === 'High' ? 'var(--c2)' : ev.priority === 'Med' ? 'var(--c3)' : 'var(--c1)'};
+            background:${ev.priority === 'High' ? '#ef4444' : ev.priority === 'Med' ? '#eab308' : '#22c55e'};
             margin-right:3px;" title="${ev.priority} priority"></span>`
         : '';
 
@@ -132,7 +132,7 @@ function renderCalendar() {
       const prioDot = ev.priority
         ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0;
             display:inline-block; margin-top:4px;
-            background:${ev.priority === 'High' ? 'var(--c2)' : ev.priority === 'Med' ? 'var(--c3)' : 'var(--c1)'};"
+            background:${ev.priority === 'High' ? '#ef4444' : ev.priority === 'Med' ? '#eab308' : '#22c55e'};"
             title="${ev.priority} priority"></span>`
         : '';
       return `
@@ -279,9 +279,9 @@ function renderTasks() {
 
         if (!catCollapsed) {
           for (const t of cat.tasks) {
-            const prioColor = t.priority === 'High' ? 'var(--c2)'
-                            : t.priority === 'Med'  ? 'var(--c3)'
-                            : 'var(--c1)';
+            const prioColor = t.priority === 'High' ? '#ef4444'
+                            : t.priority === 'Med'  ? '#eab308'
+                            : '#22c55e';
             html += `
               <div class="task-row${t.done ? ' done' : ''}"
                 draggable="true"
@@ -289,15 +289,15 @@ function renderTasks() {
                 <input type="checkbox" style="width:16px; height:16px; cursor:pointer;"
                   ${t.done ? 'checked' : ''}
                   onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
-                <span style="width:8px; height:8px; border-radius:50%; background:${prioColor};
-                  flex-shrink:0; display:inline-block;" title="${t.priority} priority"></span>
+                <span
+                  onclick="event.stopPropagation(); cycleTaskPriority(${proj.id}, ${cat.id}, ${t.id})"
+                  style="width:10px; height:10px; border-radius:50%; background:${prioColor};
+                    flex-shrink:0; display:inline-block; cursor:pointer;
+                    transition:transform .1s, box-shadow .1s;"
+                  onmouseover="this.style.transform='scale(1.35)'; this.style.boxShadow='0 0 6px ${prioColor}'"
+                  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                  title="Priority: ${t.priority} — click to change"></span>
                 <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
-                <select class="priority-select"
-                  onchange="changeTaskPriority(${proj.id}, ${cat.id}, ${t.id}, event)">
-                  <option value="High" ${t.priority === 'High' ? 'selected' : ''}>High</option>
-                  <option value="Med"  ${t.priority === 'Med'  ? 'selected' : ''}>Med</option>
-                  <option value="Low"  ${t.priority === 'Low'  ? 'selected' : ''}>Low</option>
-                </select>
                 <button class="btn btn-ghost icon-btn"
                   onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})">×</button>
               </div>`;
