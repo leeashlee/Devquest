@@ -234,7 +234,7 @@ function renderTasks() {
       // Sprint notes
       if (proj.notes) {
         html += `
-          <div class="dim" style="padding:10px 14px; font-size:14px; font-style:italic;
+          <div class="dim" style="padding:10px 12px; font-size:12px; font-style:italic;
             border-bottom:1px dashed var(--border);">
             Sprint Note: ${esc(proj.notes)}
           </div>`;
