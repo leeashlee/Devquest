@@ -1,6 +1,6 @@
 # DEVQUEST
 
-A lightweight browser-based project manager built for game development workflows.
+A lightweight browser-based project manager built for game development workflows. 
 
 ## Overview
 
