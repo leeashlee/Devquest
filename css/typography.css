@@ -1,0 +1,214 @@
+/* ════════════════════════════════════════
+   TYPOGRAPHY — Fonts, sizes, spacing
+   All type values live here. To restyle
+   the whole app, only edit this file.
+   ════════════════════════════════════════ */
+
+/* ── Font families ── */
+:root {
+  --font-mono:    'Share Tech Mono', monospace;  /* body / UI */
+  --font-display: 'VT323', monospace;            /* headings / pixel titles */
+}
+
+/* ── Type scale ── */
+:root {
+  --text-xxs:  10px;   /* badges, tiny labels          */
+  --text-xs:   11px;   /* hour labels, secondary dim   */
+  --text-sm:   12px;   /* captions, slot labels, dates */
+  --text-base: 13px;   /* event chips, calendar text   */
+  --text-md:   14px;   /* buttons, meta, week label    */
+  --text-ui:   15px;   /* task rows, inputs            */
+  --text-body: 17px;   /* base body size               */
+  --text-cat:  16px;   /* category headers             */
+
+  /* Display scale (VT323 pixel font) */
+  --text-d-sm:  20px;  /* project name in work log     */
+  --text-d-md:  24px;  /* panel headers (.ph-title)    */
+  --text-d-lg:  26px;  /* day number in calendar       */
+  --text-d-xl:  36px;  /* DEVQUEST wordmark            */
+  --text-d-xxl: 42px;  /* big % progress number        */
+}
+
+/* ── Letter spacing ── */
+:root {
+  --ls-tight:  1px;
+  --ls-normal: 2px;
+  --ls-wide:   4px;
+}
+
+/* ── Line heights ── */
+:root {
+  --lh-tight:  1;
+  --lh-snug:   1.1;
+  --lh-base:   1.2;
+  --lh-normal: 1.3;
+  --lh-loose:  1.8;
+}
+
+/* ════════════════════════════════════════
+   UTILITY CLASSES
+   Apply these directly in HTML/templates
+   instead of writing inline font-size.
+   ════════════════════════════════════════ */
+
+/* ── Font family helpers ── */
+.font-mono    { font-family: var(--font-mono); }
+.font-display { font-family: var(--font-display); }
+
+/* Alias used throughout the codebase */
+.vt { font-family: var(--font-display); }
+
+/* ── Colour helpers ── */
+.teal   { color: var(--c1); }
+.pink   { color: var(--c2); }
+.yellow { color: var(--c3); }
+.dim    { color: var(--dim); }
+
+/* ── Size utilities ── */
+.text-xxs  { font-size: var(--text-xxs); }
+.text-xs   { font-size: var(--text-xs);  }
+.text-sm   { font-size: var(--text-sm);  }
+.text-base { font-size: var(--text-base);}
+.text-md   { font-size: var(--text-md);  }
+.text-ui   { font-size: var(--text-ui);  }
+.text-body { font-size: var(--text-body);}
+
+/* Display sizes always use the display font */
+.text-d-sm  { font-family: var(--font-display); font-size: var(--text-d-sm);  }
+.text-d-md  { font-family: var(--font-display); font-size: var(--text-d-md);  }
+.text-d-lg  { font-family: var(--font-display); font-size: var(--text-d-lg);  }
+.text-d-xl  { font-family: var(--font-display); font-size: var(--text-d-xl);  }
+.text-d-xxl { font-family: var(--font-display); font-size: var(--text-d-xxl); }
+
+/* ── Spacing utilities ── */
+.ls-tight  { letter-spacing: var(--ls-tight);  }
+.ls-normal { letter-spacing: var(--ls-normal); }
+.ls-wide   { letter-spacing: var(--ls-wide);   }
+
+/* ── Named component text roles ──
+   These group the tokens into semantic
+   labels so you know *what* you're styling,
+   not just *how big* it is.               */
+
+/* Wordmark: DEVQUEST_ */
+.type-wordmark {
+  font-family: var(--font-display);
+  font-size:   var(--text-d-xl);
+  letter-spacing: var(--ls-wide);
+}
+
+/* Panel section titles (WEEKLY SCHEDULE, WORK LOG…) */
+.type-panel-title {
+  font-family: var(--font-display);
+  font-size:   var(--text-d-md);
+  letter-spacing: var(--ls-normal);
+}
+
+/* Big project completion percentage */
+.type-big-pct {
+  font-family: var(--font-display);
+  font-size:   var(--text-d-xxl);
+  line-height: var(--lh-tight);
+}
+
+/* Day number in calendar header */
+.type-day-num {
+  font-family: var(--font-display);
+  font-size:   var(--text-d-lg);
+  line-height: var(--lh-snug);
+}
+
+/* Project name in work log */
+.type-proj-name {
+  font-family: var(--font-display);
+  font-size:   var(--text-d-sm);
+}
+
+/* Day-of-week label (MON, TUE…) */
+.type-day-label {
+  font-size:      var(--text-sm);
+  letter-spacing: var(--ls-normal);
+  color:          var(--dim);
+}
+
+/* Small all-caps section labels (ANYTIME, MILESTONES…) */
+.type-section-label {
+  font-size:      var(--text-sm);
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  color:          var(--dim);
+}
+
+/* Hour labels in timeline (6am, 7am…) */
+.type-hour-label {
+  font-size:   var(--text-xs);
+  line-height: var(--lh-base);
+  color:       var(--dim);
+  text-align:  center;
+}
+
+/* Event text (chips + timed blocks) */
+.type-event {
+  font-size:   var(--text-base);
+  line-height: var(--lh-normal);
+}
+
+/* Timed block title (ellipsis truncation) */
+.type-ev-title {
+  font-size:     var(--text-base);
+  line-height:   var(--lh-normal);
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
+
+/* Task row text */
+.type-task {
+  font-size: var(--text-ui);
+}
+
+/* Category header */
+.type-category {
+  font-size: var(--text-cat);
+}
+
+/* Buttons */
+.type-btn {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-md);
+  letter-spacing: var(--ls-tight);
+}
+
+/* Input fields */
+.type-input {
+  font-family: var(--font-mono);
+  font-size:   var(--text-ui);
+}
+
+/* Meta / secondary info (task count, week label, project label) */
+.type-meta {
+  font-size: var(--text-md);
+}
+
+/* Tiny captions (sprint notes, milestone dates, footer) */
+.type-caption {
+  font-size: var(--text-sm);
+}
+
+/* Italic sprint note */
+.type-sprint-note {
+  font-size:  var(--text-sm);
+  font-style: italic;
+  color:      var(--dim);
+}
+
+/* Milestone entry */
+.type-milestone {
+  font-size: var(--text-base);
+}
+
+/* Progress label above bar */
+.type-prog-label {
+  font-size: var(--text-md);
+  color:     var(--dim);
+}

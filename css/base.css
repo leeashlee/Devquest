@@ -13,8 +13,8 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 17px;
+  font-family: var(--font-mono);
+  font-size: var(--text-body);
   min-height: 100vh;
   overflow-x: hidden;
   transition: background 0.3s, color 0.3s;
@@ -36,12 +36,7 @@ body[data-theme="cyber"][data-mode="night"]::after {
   z-index: 9999;
 }
 
-/* ── Typography helpers ── */
-.vt     { font-family: 'VT323', monospace; }
-.teal   { color: var(--c1); }
-.pink   { color: var(--c2); }
-.yellow { color: var(--c3); }
-.dim    { color: var(--dim); }
+/* ── Typography helpers — see css/typography.css ── */
 
 /* ── Panel ── */
 .panel {
@@ -63,8 +58,8 @@ body[data-theme="cyber"][data-mode="night"]::after {
 }
 
 .ph-title {
-  font-size: 24px;
-  letter-spacing: 2px;
+  font-size: var(--text-d-md);
+  letter-spacing: var(--ls-normal);
 }
 
 /* ── Buttons ── */
@@ -72,11 +67,11 @@ body[data-theme="cyber"][data-mode="night"]::after {
   background: transparent;
   border: 1px solid currentColor;
   color: inherit;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 14px;
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
   padding: 4px 10px;
   border-radius: 3px;
-  letter-spacing: 1px;
+  letter-spacing: var(--ls-tight);
   cursor: pointer;
   transition: background .15s;
 }
@@ -88,9 +83,9 @@ body[data-theme="cyber"][data-mode="night"]::after {
 .btn-ghost {
   border: none;
   opacity: .75;
-  font-size: 16px;
+  font-size: var(--text-cat);
   padding: 4px 8px;
-  min-width: 16px; /* fixed: was "16 px" with stray space */
+  min-width: 16px;
 }
 
 .btn-ghost:hover {
@@ -122,8 +117,8 @@ body[data-theme="cyber"][data-mode="night"]::after {
   background: var(--surf2);
   border: 1px solid var(--border);
   color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 15px;
+  font-family: var(--font-mono);
+  font-size: var(--text-ui);
   padding: 8px 12px;
   border-radius: 3px;
   outline: none;
@@ -139,7 +134,7 @@ body[data-theme="cyber"][data-mode="night"]::after {
   border: 1px solid var(--border);
   color: var(--text);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-md);
   border-radius: 4px;
   padding: 4px 8px;
   min-width: 100px;

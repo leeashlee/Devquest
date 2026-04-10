@@ -15,6 +15,7 @@
 
   <!-- Styles (load order matters) -->
   <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/calendar.css">
@@ -27,7 +28,7 @@
   <header style="border-bottom:1px solid var(--border); background:var(--surf2);
     padding:0 20px; position:sticky; top:0; z-index:50;">
     <div style="display:flex; align-items:center; justify-content:space-between; height:60px;">
-      <div class="vt teal" style="font-size:36px; letter-spacing:4px;">
+      <div class="vt teal type-wordmark">
         DEVQUEST<span style="opacity:0.5">_</span>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
@@ -46,16 +47,16 @@
       <div class="ph">
         <div>
           <span class="vt yellow ph-title">PROJECT MASTERY</span>
-          <div id="projectLabel" class="dim" style="font-size:13px; margin-top:4px;">
+          <div id="projectLabel" class="dim type-caption" style="margin-top:4px;">
             Project: —</div>
         </div>
-        <span id="taskCount" class="dim" style="font-size:14px;">0 / 0 tasks</span>
+        <span id="taskCount" class="dim type-meta">0 / 0 tasks</span>
       </div>
       <div style="padding:20px;">
         <div style="display:flex; align-items:baseline; justify-content:space-between;
           margin-bottom:10px;">
-          <span class="dim" style="letter-spacing:2px;">PROJECT COMPLETION</span>
-          <span class="vt teal" id="bigPct" style="font-size:42px; line-height:1;">0%</span>
+          <span class="dim ls-normal type-section-label">PROJECT COMPLETION</span>
+          <span class="vt teal type-big-pct" id="bigPct">0%</span>
         </div>
         <div class="prog-track" style="height:16px;">
           <div class="prog-fill" id="overallBar" style="width:0%;"></div>
@@ -72,7 +73,7 @@
           <span class="vt teal ph-title">WEEKLY SCHEDULE</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <button class="btn btn-ghost" onclick="prevWeek()">◀</button>
-            <span id="weekLabel" class="dim" style="font-size:14px;"></span>
+            <span id="weekLabel" class="dim type-meta"></span>
             <button class="btn btn-ghost" onclick="nextWeek()">▶</button>
             <button class="btn" style="color:var(--c1); border-color:var(--c1);" onclick="goToday()">TODAY</button>
           </div>
@@ -115,7 +116,7 @@
 </body>
 <footer
   style="border-top:1px solid var(--border); padding:0 20px; display:flex; align-items:center; justify-content:center;">
-  <div class="dim" style="font-size:12px; text-align:center; padding:20px 0; line-height:1.8;">
+  <div class="dim type-caption" style="text-align:center; padding:20px 0; line-height:var(--lh-loose);">
     Made with love 💖<br>
     © 2026 <a href="https://www.ashleehee.com/" target="_blank" rel="noopener noreferrer"
       style="color: var(--c1); text-decoration: none;" onmouseover="this.style.textDecoration='underline'"
