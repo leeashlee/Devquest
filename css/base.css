@@ -112,6 +112,17 @@ body[data-theme="cyber"][data-mode="night"]::after {
   background: rgba(128, 128, 128, .12);
 }
 
+/* Target the specific danger button */
+.btn-danger {
+  background: var(--c2);
+  border-color: transparent;
+  color: inherit; /* Or whatever contrast color you need */
+}
+
+.btn-danger:hover {
+  background: transparent;
+  border: 1px solid var(--c2);
+}
 /* ── Inputs ── */
 .inp {
   background: var(--surf2);

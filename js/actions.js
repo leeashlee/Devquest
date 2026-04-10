@@ -15,6 +15,42 @@ function setModalContent(html) {
   openModal();
 }
 
+// ── Delete confirmation modal ─────────────────────────────
+/**
+ * Opens a styled confirmation modal before any deletion.
+ *
+ * @param {object} opts
+ *   label      - short name of what's being deleted (e.g. "task")
+ *   name       - the actual item name shown in the modal
+ *   detail     - optional warning line (e.g. "All tasks inside will be lost.")
+ *   onConfirm  - function called if the user confirms
+ *   danger     - true = red accent (destructive), false = softer yellow
+ */
+function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true }) {
+  const accent     = danger ? 'var(--c2)' : 'var(--c3)';
+  const icon       = danger ? '⚠️' : '✕';
+  const detailHtml = detail
+    ? `<div class="dim type-caption" style="margin-top:6px; font-size:12px;">${detail}</div>`
+    : '';
+
+  setModalContent(`
+    <div style="text-align:center; padding:8px 0 22px;">
+      <div style="font-size:18px; margin-bottom:0px;">${icon}</div>
+      <div class="vt" style="font-size:18px; color:${accent}; letter-spacing:2px; margin-bottom:16px;">
+        DELETE ${label.toUpperCase()}?
+      </div>
+      <div style="color:var(--text); margin-bottom:6px; font-size:22px;">
+        <strong>${esc(name)}</strong>
+      </div>
+      ${detailHtml}
+    </div>
+    <div style="display:flex; gap:16px; justify-content:center;">
+      <button class="btn dim" style="color:var(--dim)" onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-danger" style="--btn-accent:${accent};"
+        onclick="(${onConfirm.toString()})(); closeModal();">DELETE</button>
+    </div>`);
+}
+
 // ── Navigation ───────────────────────────────────────────
 function prevWeek() { S.weekStart = addDays(S.weekStart, -7); render(); }
 function nextWeek() { S.weekStart = addDays(S.weekStart,  7); render(); }
@@ -54,9 +90,17 @@ function toggleTask(pId, cId, tId) {
 }
 
 function deleteTask(pId, cId, tId) {
-  const cat = findCategory(pId, cId);
-  cat.tasks = cat.tasks.filter(t => t.id !== tId);
-  render();
+  const t = findTask(pId, cId, tId);
+  openDeleteConfirm({
+    label:     'task',
+    name:      t?.text || 'this task',
+    danger:    false,
+    onConfirm: () => {
+      const cat = findCategory(pId, cId);
+      cat.tasks = cat.tasks.filter(t => t.id !== tId);
+      render();
+    },
+  });
 }
 
 function changeTaskDuration(pId, cId, tId, ev) {
@@ -71,7 +115,7 @@ function cycleTaskPriority(pId, cId, tId) {
   const order = ['High', 'Med', 'Low'];
   t.priority  = order[(order.indexOf(t.priority) + 1) % order.length];
 
-  // Sync linked calendar events — Number() guards against string/number mismatches after JSON round-trips
+  // Sync linked calendar events — Number() guards against string/number mismatches
   for (const dayEvents of Object.values(S.events)) {
     for (const calEv of dayEvents) {
       if (calEv.taskRef &&
@@ -135,7 +179,7 @@ function openEditCategory(pId, cId) {
 }
 
 function saveCategoryEdits(pId, cId) {
-  const cat  = findCategory(pId, cId);
+  const cat = findCategory(pId, cId);
   cat.name  = document.getElementById('catName').value;
   cat.color = document.getElementById('catColor').value;
   closeModal();
@@ -143,10 +187,17 @@ function saveCategoryEdits(pId, cId) {
 }
 
 function deleteCategory(pId, cId) {
-  if (!confirm('Delete category and all its tasks?')) return;
-  const proj       = findProject(pId);
-  proj.categories  = proj.categories.filter(c => c.id !== cId);
-  render();
+  const cat = findCategory(pId, cId);
+  openDeleteConfirm({
+    label:     'category',
+    name:      cat?.name || 'this category',
+    detail:    'All tasks inside will be permanently lost.',
+    onConfirm: () => {
+      const proj      = findProject(pId);
+      proj.categories = proj.categories.filter(c => c.id !== cId);
+      render();
+    },
+  });
 }
 
 // ── Projects ─────────────────────────────────────────────
@@ -177,6 +228,22 @@ function confirmAddProject() {
   S.selectedProjectId = newProject.id;
   closeModal();
   render();
+}
+
+function deleteProject(pId) {
+  const proj = findProject(pId);
+  openDeleteConfirm({
+    label:     'project',
+    name:      proj?.name || 'this project',
+    detail:    'All categories, tasks and milestones will be permanently lost.',
+    onConfirm: () => {
+      S.projects = S.projects.filter(p => p.id !== pId);
+      if (S.selectedProjectId === pId) {
+        S.selectedProjectId = S.projects[0]?.id ?? null;
+      }
+      render();
+    },
+  });
 }
 
 // ── Project editing & milestones ─────────────────────────
@@ -219,9 +286,7 @@ function openEditProject(pId) {
     ${milestoneRows}
     <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
       <button class="btn" style="color:var(--c2);"
-        onclick="if(confirm('Delete project and all its tasks?')){
-          S.projects = S.projects.filter(x => x.id !== ${pId});
-          closeModal(); render(); }">DELETE PROJECT</button>
+        onclick="deleteProject(${pId})">DELETE PROJECT</button>
       <div style="flex:1;"></div>
       <button class="btn dim" onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1);"
@@ -238,9 +303,17 @@ function startEditMilestone(pId, mId) {
 }
 
 function deleteMilestone(pId, mId) {
-  const proj        = findProject(pId);
-  proj.milestones   = (proj.milestones || []).filter(m => m.id !== mId);
-  openEditProject(pId); // re-render modal in place
+  const proj      = findProject(pId);
+  const milestone = proj.milestones?.find(m => m.id === mId);
+  openDeleteConfirm({
+    label:     'milestone',
+    name:      milestone?.title || 'this milestone',
+    danger:    false,
+    onConfirm: () => {
+      proj.milestones = (proj.milestones || []).filter(m => m.id !== mId);
+      openEditProject(pId);
+    },
+  });
 }
 
 function saveProjectEdits(pId) {
@@ -270,7 +343,6 @@ function saveProjectEdits(pId) {
 function openAddEvent(key, hour = null) {
   const defaultTime = typeof hour === 'number' ? formatHour(hour) : '';
 
-  // Preset palette — distinct, readable on both light and dark themes
   const swatches = [
     '#00f5d4', '#ff2271', '#ffe566', '#a855f7',
     '#3b82f6', '#f97316', '#10b981', '#f472b6',
@@ -312,16 +384,13 @@ function openAddEvent(key, hour = null) {
         onclick="confirmAddEvent('${key}')">ADD</button>
     </div>`);
 
-  // Pre-select the first swatch
-  const firstSwatch = document.querySelector(
-    '#modalContent [onclick^="selectEventColor"]');
+  const firstSwatch = document.querySelector('#modalContent [onclick^="selectEventColor"]');
   if (firstSwatch) firstSwatch.style.borderColor = '#fff';
 }
 
 function selectEventColor(hex, swatchEl) {
-  document.getElementById('evColor').value = hex;
+  document.getElementById('evColor').value       = hex;
   document.getElementById('evColorCustom').value = hex;
-  // Reset all swatch borders then highlight the chosen one
   document.querySelectorAll('#modalContent [onclick^="selectEventColor"]')
     .forEach(el => el.style.borderColor = 'transparent');
   if (swatchEl) swatchEl.style.borderColor = '#fff';
@@ -341,8 +410,16 @@ function confirmAddEvent(key) {
 }
 
 function deleteEvent(key, id) {
-  if (S.events[key]) {
-    S.events[key] = S.events[key].filter(e => e.id !== id);
-  }
-  render();
+  const ev = S.events[key]?.find(e => e.id === id);
+  openDeleteConfirm({
+    label:     'event',
+    name:      ev?.text || 'this event',
+    danger:    false,
+    onConfirm: () => {
+      if (S.events[key]) {
+        S.events[key] = S.events[key].filter(e => e.id !== id);
+      }
+      render();
+    },
+  });
 }
