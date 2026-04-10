@@ -61,9 +61,9 @@ function computeTimedLayout(evts) {
 
   const columns = []; // tracks the end-hour of each lane
   return timed.map(ev => {
-    const start    = parseEventHour(ev.time) || 6;
+    const start = parseEventHour(ev.time) || 6;
     const duration = getEventDuration(ev);
-    const end      = start + duration;
+    const end = start + duration;
 
     let lane = columns.findIndex(lastEnd => start >= lastEnd);
     if (lane === -1) {
@@ -78,33 +78,33 @@ function computeTimedLayout(evts) {
 }
 
 function renderCalendar() {
-  const ws    = S.weekStart;
+  const ws = S.weekStart;
   const hours = Array.from({ length: 17 }, (_, i) => i + 6); // 6am–10pm
 
   document.getElementById('weekLabel').textContent =
     `${ws.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ` +
     `${addDays(ws, 6).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
-  let calHtml     = '';
+  let calHtml = '';
   let mobPickHtml = '';
 
   for (let i = 0; i < 7; i++) {
-    const day   = addDays(ws, i);
-    const key   = fmtKey(day);
-    const evts  = S.events[key] || [];
+    const day = addDays(ws, i);
+    const key = fmtKey(day);
+    const evts = S.events[key] || [];
     const today = isToday(day);
 
-    const timedLayout  = computeTimedLayout(evts);
-    const untimedEvts  = evts.filter(ev => parseEventHour(ev.time) === null);
-    const columnCount  = Math.max(1, ...timedLayout.map(item => item.lane + 1));
+    const timedLayout = computeTimedLayout(evts);
+    const untimedEvts = evts.filter(ev => parseEventHour(ev.time) === null);
+    const columnCount = Math.max(1, ...timedLayout.map(item => item.lane + 1));
 
     // Absolutely-positioned timed blocks
     const eventBlocks = timedLayout.map(item => {
-      const top    = (item.start - 6) * HOUR_HEIGHT + 4;
+      const top = (item.start - 6) * HOUR_HEIGHT + 4;
       const height = Math.max(HOUR_HEIGHT - 8, item.duration * HOUR_HEIGHT - 8);
-      const left   = `calc(44px + ${item.lane * 10}px)`;
-      const width  = `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
-      const ev     = item.ev;
+      const left = `calc(44px + ${item.lane * 10}px)`;
+      const width = `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
+      const ev = item.ev;
       const prioDot = ev.priority
         ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
             background:${ev.priority === 'High' ? '#ef4444' : ev.priority === 'Med' ? '#eab308' : '#22c55e'};
@@ -197,8 +197,8 @@ function renderCalendar() {
       </div>`;
   }
 
-  document.getElementById('calGrid').innerHTML          = calHtml;
-  document.getElementById('mobileDayPicker').innerHTML  = mobPickHtml;
+  document.getElementById('calGrid').innerHTML = calHtml;
+  document.getElementById('mobileDayPicker').innerHTML = mobPickHtml;
 }
 
 // ════════════════════════════════════════
@@ -210,13 +210,13 @@ function renderTasks() {
 
   for (const proj of S.projects) {
     const isCollapsed = S.collapsedProj[proj.id];
-    const isSelected  = S.selectedProjectId === proj.id;
+    const isSelected = S.selectedProjectId === proj.id;
 
     // Compute project completion
     let projDone = 0, projTotal = 0;
     for (const cat of proj.categories || []) {
       projTotal += cat.tasks.length;
-      projDone  += cat.tasks.filter(t => t.done).length;
+      projDone += cat.tasks.filter(t => t.done).length;
     }
     const projPct = projTotal ? Math.round(projDone / projTotal * 100) : 0;
 
@@ -262,7 +262,7 @@ function renderTasks() {
       // Categories
       for (const cat of proj.categories || []) {
         const catCollapsed = S.collapsedCat[cat.id];
-        const catColor     = cat.color || proj.color;
+        const catColor = cat.color || proj.color;
 
         html += `
           <div>
@@ -287,34 +287,37 @@ function renderTasks() {
         if (!catCollapsed) {
           for (const t of cat.tasks) {
             const prioColor = t.priority === 'High' ? '#ef4444'
-                            : t.priority === 'Med'  ? '#eab308'
-                            : '#22c55e';
+              : t.priority === 'Med' ? '#eab308'
+                : '#22c55e';
             html += `
               <div class="task-row${t.done ? ' done' : ''}"
-                draggable="true"
-                ondragstart="dragStart(event, '${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}', ${proj.id}, ${cat.id}, ${t.id})">
-                <input type="checkbox" style="width:16px; height:16px; cursor:pointer;"
-                  ${t.done ? 'checked' : ''}
-                  onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
-                <span
-                  onclick="event.stopPropagation(); cycleTaskPriority(${proj.id}, ${cat.id}, ${t.id})"
-                  style="width:10px; height:10px; border-radius:50%; background:${prioColor};
-                    flex-shrink:0; display:inline-block; cursor:pointer;
-                    transition:transform .1s, box-shadow .1s;"
-                  onmouseover="this.style.transform='scale(1.35)'; this.style.boxShadow='0 0 6px ${prioColor}'"
-                  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
-                  title="Priority: ${t.priority} — click to change"></span>
-                <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
-                <button class="btn btn-ghost icon-btn task-action-btn"
-                  onclick="event.stopPropagation(); openEditTask(${proj.id}, ${cat.id}, ${t.id})"
-                  title="Edit task">
-                  <i data-lucide="pencil" style="width:13px; height:13px;"></i>
-                </button>
-                <button class="btn btn-ghost icon-btn task-action-btn"
-                  onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})"
-                  title="Delete task">
-                  <i data-lucide="trash-2" style="width:13px; height:13px;"></i>
-                </button>
+                  draggable="true"
+                  ondragstart="dragStart(event, '${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}', ${proj.id}, ${cat.id}, ${t.id})">
+                  <input type="checkbox" style="width:16px; height:16px; cursor:pointer;"
+                    ${t.done ? 'checked' : ''}
+                    onchange="toggleTask(${proj.id}, ${cat.id}, ${t.id})">
+                  <span
+                    onclick="event.stopPropagation(); cycleTaskPriority(${proj.id}, ${cat.id}, ${t.id})"
+                    style="width:10px; height:10px; border-radius:50%; background:${prioColor};
+                      flex-shrink:0; display:inline-block; cursor:pointer;
+                      transition:transform .1s, box-shadow .1s;"
+                    onmouseover="this.style.transform='scale(1.35)'; this.style.boxShadow='0 0 6px ${prioColor}'"
+                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                    title="Priority: ${t.priority} — click to change"></span>
+                  <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
+                  
+                  <div style="display: flex; align-items: center;">
+                      <button class="btn btn-ghost icon-btn task-action-btn"
+                        onclick="event.stopPropagation(); openEditTask(${proj.id}, ${cat.id}, ${t.id})"
+                        title="Edit task">
+                        <i data-lucide="pencil" style="width:13px; height:13px;"></i>
+                      </button>
+                      <button class="btn btn-ghost icon-btn task-action-btn"
+                        onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})"
+                        title="Delete task">
+                        <i data-lucide="x" style="width:13px; height:13px;"></i>
+                      </button>
+                  </div>
               </div>`;
           }
 
@@ -365,14 +368,14 @@ function renderProgress() {
 
   let tDone = 0, tAll = 0;
   for (const cat of project.categories || []) {
-    tAll  += cat.tasks.length;
+    tAll += cat.tasks.length;
     tDone += cat.tasks.filter(t => t.done).length;
   }
 
   const pct = tAll ? Math.round(tDone / tAll * 100) : 0;
 
-  document.getElementById('bigPct').textContent         = `${pct}%`;
-  document.getElementById('overallBar').style.width     = `${pct}%`;
-  document.getElementById('taskCount').textContent      = `${tDone} / ${tAll} tasks completed`;
-  document.getElementById('projectLabel').textContent   = `Project: ${project.name}`;
+  document.getElementById('bigPct').textContent = `${pct}%`;
+  document.getElementById('overallBar').style.width = `${pct}%`;
+  document.getElementById('taskCount').textContent = `${tDone} / ${tAll} tasks completed`;
+  document.getElementById('projectLabel').textContent = `Project: ${project.name}`;
 }

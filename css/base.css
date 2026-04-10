@@ -94,7 +94,7 @@ body[data-theme="cyber"][data-mode="night"]::after {
   border:     none;
   opacity:    .75;
   font-size:  var(--text-cat);
-  padding:    4px 8px;
+  padding:    4px 4px;
   min-width:  16px;
 }
 
@@ -232,6 +232,5 @@ body[data-theme="cyber"][data-mode="night"]::after {
   .task-row .icon-btn {
     width: 36px;
     height: 36px;
-    margin-left: 4px;
   }
 }
