@@ -131,17 +131,19 @@ function renderCalendar() {
     // Untimed (anytime) chips
     const untimedHtml = untimedEvts.map(ev => {
       const prioDot = ev.priority
-        ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0;
-            display:inline-block; margin-top:4px;
-            background:${ev.priority === 'High' ? '#ef4444' : ev.priority === 'Med' ? '#eab308' : '#22c55e'};"
-            title="${ev.priority} priority"></span>`
+        ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
+            background:${ev.priority === 'High' ? '#ef4444' : ev.priority === 'Med' ? '#eab308' : '#22c55e'};
+            margin-right:3px;" title="${ev.priority} priority"></span>`
         : '';
+
       return `
       <div class="ev-chip" style="color:${ev.color}">
-        ${prioDot}
-        <span style="flex:1; line-height:1.3;" title="${esc(ev.text)}">${esc(ev.text)}</span>
-        <button class="btn-ghost icon-btn dim"
-          onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
+        <div class="ev-header">
+          ${prioDot}
+          <span class="ev-title" title="${esc(ev.text)}">${esc(ev.text)}</span>
+          <button class="icon-btn dim" 
+            onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
+        </div>
       </div>`;
     }).join('');
 

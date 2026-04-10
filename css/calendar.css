@@ -4,18 +4,18 @@
 
 /* ── Day grid wrapper ── */
 .cal-wrapper {
-  display:    flex;
+  display: flex;
   overflow-x: auto;
   min-height: 260px;
-  flex:       1;
+  flex: 1;
 }
 
 /* ── Day column ── */
 .day-col {
-  flex:       1;
-  min-width:  0;
+  flex: 1;
+  min-width: 0;
   border-right: 1px solid var(--border);
-  display:    flex;
+  display: flex;
   flex-direction: column;
   transition: all 0.3s;
 }
@@ -26,9 +26,9 @@
 
 /* ── Day header ── */
 .day-hdr {
-  padding:       8px;
-  text-align:    center;
-  background:    var(--surf2);
+  padding: 8px;
+  text-align: center;
+  background: var(--surf2);
   border-bottom: 1px solid var(--border);
 }
 
@@ -37,95 +37,142 @@
 }
 
 .day-name {
-  font-size:      var(--text-sm);
+  font-size: var(--text-sm);
   letter-spacing: var(--ls-normal);
-  color:          var(--dim);
+  color: var(--dim);
 }
 
 .day-num {
   font-family: var(--font-display);
-  font-size:   var(--text-d-lg);
+  font-size: var(--text-d-lg);
   line-height: var(--lh-snug);
 }
 
 .day-today .day-num {
-  color:       var(--c1);
+  color: var(--c1);
   font-weight: bold;
 }
 
 /* ── Day events area ── */
 .day-events {
-  display:    grid;
-  gap:        10px;
-  flex:       1;
-  padding:    4px;
+  display: grid;
+  gap: 10px;
+  flex: 1;
+  padding: 4px;
   min-height: 180px;
   overflow-y: auto;
-  position:   relative;
+  position: relative;
 }
 
 .day-events.drag-over {
   background: rgba(0, 245, 212, 0.1);
-  border:     2px dashed var(--c1);
+  border: 2px dashed var(--c1);
 }
 
 /* ── Anytime section ── */
 .slot-section {
-  border-top:    1px solid rgba(128, 128, 128, .1);
-  padding-top:   8px;
+  border-top: 1px solid rgba(128, 128, 128, .1);
+  padding-top: 8px;
   margin-bottom: 10px;
 }
 
 .slot-label {
-  font-size:      var(--text-sm);
+  font-size: var(--text-sm);
   letter-spacing: var(--ls-tight);
   text-transform: uppercase;
-  color:          var(--dim);
-  margin-bottom:  6px;
+  color: var(--dim);
+  margin-bottom: 6px;
 }
 
 .anytime-section {
-  background:    rgba(128, 128, 128, 0.04);
+  background: rgba(128, 128, 128, 0.04);
   border-radius: 10px;
-  padding:       10px;
+  padding: 8px;
+  /* Slightly reduced padding */
+  width: 100%;
+  /* Take up all space */
+  min-width: 0;
+  /* ALLOW it to be thin */
+  box-sizing: border-box;
+  /* Padding stays INSIDE the width */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Gap between multiple chips */
 }
 
 /* ── Untimed event chips ── */
 .ev-chip {
-  display:         flex;
-  align-items:     flex-start;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* Fill the container width */
+  min-width: 0;
+  /* Crucial: allows shrinking for truncation */
+  box-sizing: border-box;
+  border-left: 3px solid currentColor;
+  border-radius: 3px;
+  background: rgba(128, 128, 128, .1);
+  padding: 3px 6px;
+  overflow: hidden;
+  /* Keep everything inside the chip */
+  transition: background .12s;
+}
+
+/* Ensure the header inside the chip fills the space */
+.ev-chip .ev-header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding:         4px 6px;
-  font-size:       var(--text-base);
-  border-left:     3px solid currentColor;
-  border-radius:   3px;
-  background:      rgba(128, 128, 128, .1);
+  width: 100%;
+  min-width: 0;
+  /* Allows children to truncate */
+  gap: 4px;
+}
+
+/* Force the title to truncate with ellipsis */
+.ev-chip .ev-title {
+  flex: 1;
+  min-width: 0;
+  /* Required for text-overflow to work in flex */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-base);
+}
+
+/* Ensure the delete button stays on the right */
+.ev-chip .icon-btn {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ── "Add event" icon button (per hour row + anytime) ── */
 .slot-add-btn {
-  display:         flex;
-  align-items:     center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  width:           20px;
-  height:          20px;
-  color:           var(--dim);
-  opacity:         0;
-  cursor:          pointer;
-  border-radius:   3px;
-  transition:      opacity .15s, background .15s, color .15s;
-  flex-shrink:     0;
+  width: 20px;
+  height: 20px;
+  color: var(--dim);
+  opacity: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: opacity .15s, background .15s, color .15s;
+  flex-shrink: 0;
 }
 
 .slot-add-btn:hover {
-  opacity:    1;
-  color:      var(--c1);
+  opacity: 1;
+  color: var(--c1);
   background: rgba(128, 128, 128, .08);
 }
 
 /* Show button on mobile always, desktop on hover */
 @media (max-width: 900px) {
-  .slot-add-btn { opacity: 1; }
+  .slot-add-btn {
+    opacity: 1;
+  }
 }
 
 .hour-row:hover .slot-add-btn,
@@ -135,23 +182,23 @@
 
 /* ── Timeline ── */
 .timeline {
-  position:       relative;
-  min-height:     calc(17 * 50px + 8px);
-  overflow:       hidden;
+  position: relative;
+  min-height: calc(17 * 50px + 8px);
+  overflow: hidden;
   padding-bottom: 16px;
 }
 
 /* ── Hour row (background grid) ── */
 .hour-row {
-  display:               grid;
+  display: grid;
   grid-template-columns: 28px 1fr;
-  gap:                   8px;
-  height:                50px;
-  min-height:            50px;
-  padding:               8px 6px;
-  border-top:            1px solid rgba(128, 128, 128, .12);
-  position:              relative;
-  align-items:           center;
+  gap: 8px;
+  height: 50px;
+  min-height: 50px;
+  padding: 8px 6px;
+  border-top: 1px solid rgba(128, 128, 128, .12);
+  position: relative;
+  align-items: center;
 }
 
 .hour-row.drag-over {
@@ -159,126 +206,140 @@
 }
 
 .hour-label {
-  font-size:   var(--text-xs);
-  color:       var(--dim);
-  text-align:  center;
+  font-size: var(--text-xs);
+  color: var(--dim);
+  text-align: center;
   line-height: var(--lh-base);
 }
 
 /* ── Timed event blocks (absolutely positioned) ── */
 .ev-block {
-  position:       absolute;
-  display:        flex;
+  position: absolute;
+  display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  z-index:        2;
-  padding:        3px 6px;
-  border-left:    3px solid currentColor;
-  border-radius:  3px;
-  background:     rgba(128, 128, 128, .1);
-  box-sizing:     border-box;
-  overflow:       hidden;
-  cursor:         grab;
-  transition:     background .12s;
+  z-index: 2;
+  padding: 3px 6px;
+  border-left: 3px solid currentColor;
+  border-radius: 3px;
+  background: rgba(128, 128, 128, .1);
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: grab;
+  transition: background .12s;
 }
 
-.ev-block:hover  { background: rgba(128, 128, 128, .18); }
-.ev-block:active { cursor: grabbing; }
+.ev-block:hover {
+  background: rgba(128, 128, 128, .18);
+}
+
+.ev-block:active {
+  cursor: grabbing;
+}
 
 .ev-header {
-  display:         flex;
-  align-items:     center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap:             4px;
-  width:           100%;
-  overflow:        hidden;
+  gap: 4px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .ev-title {
-  flex:          1;
-  min-width:     0;
-  font-size:     var(--text-base);
-  line-height:   var(--lh-normal);
-  color:         inherit;
-  white-space:   nowrap;
-  overflow:      hidden;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-base);
+  line-height: var(--lh-normal);
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* Delete button — hidden until hover */
 .ev-block .icon-btn {
-  width:       16px;
-  height:      16px;
-  font-size:   13px;
-  padding:     0;
+  width: 16px;
+  height: 16px;
+  font-size: 13px;
+  padding: 0;
   flex-shrink: 0;
-  opacity:     0;
+  opacity: 0;
 }
 
-.ev-block:hover .icon-btn { opacity: .7; }
-.ev-block .icon-btn:hover  { opacity:  1; }
+.ev-block:hover .icon-btn {
+  opacity: .7;
+}
+
+.ev-block .icon-btn:hover {
+  opacity: 1;
+}
 
 /* Resize handle at bottom of block */
 .resize-handle {
-  position:   absolute;
-  bottom:     0;
-  left:       0;
-  right:      0;
-  height:     5px;
-  cursor:     ns-resize;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  cursor: ns-resize;
   transition: background .12s;
 }
 
 .ev-block:hover .resize-handle {
   background: currentColor;
-  opacity:    .25;
+  opacity: .25;
 }
 
 /* ── Mobile day picker ── */
 .mobile-day-picker {
-  display:       none;
-  gap:           4px;
-  padding:       10px;
-  background:    var(--surf2);
+  display: none;
+  gap: 4px;
+  padding: 10px;
+  background: var(--surf2);
   border-bottom: 1px solid var(--border);
-  overflow-x:    auto;
+  overflow-x: auto;
 }
 
 .mob-day-btn {
-  padding:       6px 12px;
-  border:        1px solid var(--border);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
   border-radius: 4px;
-  background:    var(--surf);
-  color:         var(--dim);
-  cursor:        pointer;
+  background: var(--surf);
+  color: var(--dim);
+  cursor: pointer;
 }
 
 .mob-day-btn.active {
-  background:   var(--c1);
-  color:        var(--bg);
+  background: var(--c1);
+  color: var(--bg);
   border-color: var(--c1);
 }
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .cal-wrapper { flex-direction: column; }
+  .cal-wrapper {
+    flex-direction: column;
+  }
 
   .day-col {
-    display:       none;
-    border-right:  none;
+    display: none;
+    border-right: none;
     border-bottom: 1px solid var(--border);
   }
 
   .day-col.mobile-active {
-    display:    flex;
+    display: flex;
     min-height: 300px;
   }
 
-  .mobile-day-picker { display: flex; }
+  .mobile-day-picker {
+    display: flex;
+  }
 
   /* Larger labels on mobile so they're readable at a glance */
   .day-name {
-    font-size:      var(--text-md);
+    font-size: var(--text-md);
     letter-spacing: var(--ls-tight);
   }
 
@@ -288,6 +349,6 @@
 
   .mob-day-btn {
     font-size: var(--text-md);
-    padding:   8px 14px;
+    padding: 8px 14px;
   }
 }
