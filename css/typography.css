@@ -12,10 +12,10 @@
 
 /* ── Type scale ── */
 :root {
-  --text-xxs:  10px;   /* badges, tiny labels          */
-  --text-xs:   11px;   /* hour labels, secondary dim   */
-  --text-sm:   12px;   /* captions, slot labels, dates */
-  --text-base: 13px;   /* event chips, calendar text   */
+  --text-xxs:  11px;   /* badges, tiny labels          */
+  --text-xs:   12px;   /* hour labels, secondary dim   */
+  --text-sm:   13px;   /* captions, slot labels, dates */
+  --text-base: 13.5px;   /* event chips, calendar text   */
   --text-md:   14px;   /* buttons, meta, week label    */
   --text-ui:   15px;   /* task rows, inputs            */
   --text-body: 17px;   /* base body size               */
