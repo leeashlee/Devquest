@@ -4,7 +4,7 @@
 let pendingAction = null;
 
 // ── Modal helpers ────────────────────────────────────────
-function openModal()  { document.getElementById('modal').style.display = 'flex'; }
+function openModal() { document.getElementById('modal').style.display = 'flex'; }
 function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
 function closeModalOverlay(e) {
@@ -20,8 +20,8 @@ function setModalContent(html) {
 
 // ── Navigation ───────────────────────────────────────────
 function prevWeek() { S.weekStart = addDays(S.weekStart, -7); render(); }
-function nextWeek() { S.weekStart = addDays(S.weekStart,  7); render(); }
-function goToday()  { S.weekStart = getMonday(new Date());    render(); }
+function nextWeek() { S.weekStart = addDays(S.weekStart, 7); render(); }
+function goToday() { S.weekStart = getMonday(new Date()); render(); }
 
 function setMobileDay(idx) { activeMobileDay = idx; renderCalendar(); }
 
@@ -50,22 +50,24 @@ function toggleCat(id) {
  */
 function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true }) {
   // Store the actual function reference here
-  pendingAction = onConfirm; 
+  pendingAction = onConfirm;
 
-  const accent     = danger ? 'var(--c2)' : 'var(--c3)';
-  const btnClass   = danger ? 'btn-danger' : 'btn-warn';
-  const icon       = danger ? '⚠️' : '✕';
+  const accent = danger ? 'var(--c2)' : 'var(--c3)';
+  const btnClass = danger ? 'btn-danger' : 'btn-warn';
+  const icon = danger ? 'alert-triangle' : 'x';
   const detailHtml = detail
     ? `<div class="dim type-caption" style="margin-top:6px;">${detail}</div>`
     : '';
 
   setModalContent(`
     <div style="text-align:center; padding:8px 0 22px;">
-      <div style="font-size:18px; margin-bottom:0;">${icon}</div>
-      <div class="vt" style="font-size:24px; color:${accent}; letter-spacing:2px; margin-bottom:16px;">
+      <div style="margin-bottom:4px; align-items:center; display:flex; justify-content:center;">
+        <i data-lucide="${icon}" style="width:18px; height:18px; color:${accent};"></i>
+      </div>
+      <div class="vt" style="font-size:24px; color:${accent}; letter-spacing:2px; margin-bottom:8px;">
         DELETE ${label.toUpperCase()}?
       </div>
-      <div style="color:var(--text); margin-bottom:6px; font-size:22px;">
+      <div style="color:var(--text); margin-bottom:6px; font-size:21px;">
         <strong>${esc(name)}</strong>
       </div>
       ${detailHtml}
@@ -79,8 +81,8 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
 
 // ── Navigation ───────────────────────────────────────────
 function prevWeek() { S.weekStart = addDays(S.weekStart, -7); render(); }
-function nextWeek() { S.weekStart = addDays(S.weekStart,  7); render(); }
-function goToday()  { S.weekStart = getMonday(new Date());    render(); }
+function nextWeek() { S.weekStart = addDays(S.weekStart, 7); render(); }
+function goToday() { S.weekStart = getMonday(new Date()); render(); }
 
 function setMobileDay(idx) { activeMobileDay = idx; renderCalendar(); }
 
@@ -131,15 +133,15 @@ function cycleTaskPriority(pId, cId, tId) {
   if (!t) return;
 
   const order = ['High', 'Med', 'Low'];
-  t.priority  = order[(order.indexOf(t.priority) + 1) % order.length];
+  t.priority = order[(order.indexOf(t.priority) + 1) % order.length];
 
   // Sync linked calendar events — Number() guards against string/number mismatches after JSON round-trips
   for (const dayEvents of Object.values(S.events)) {
     for (const calEv of dayEvents) {
       if (calEv.taskRef &&
-          Number(calEv.taskRef.pId) === Number(pId) &&
-          Number(calEv.taskRef.cId) === Number(cId) &&
-          Number(calEv.taskRef.tId) === Number(tId)) {
+        Number(calEv.taskRef.pId) === Number(pId) &&
+        Number(calEv.taskRef.cId) === Number(cId) &&
+        Number(calEv.taskRef.tId) === Number(tId)) {
         calEv.priority = t.priority;
       }
     }
@@ -167,7 +169,7 @@ function openAddCategory(pId) {
 }
 
 function confirmAddCategory(pId) {
-  const name  = document.getElementById('catName').value.trim();
+  const name = document.getElementById('catName').value.trim();
   const color = document.getElementById('catColor').value;
   if (!name) return;
 
@@ -178,7 +180,7 @@ function confirmAddCategory(pId) {
 
 function openEditCategory(pId, cId) {
   const proj = findProject(pId);
-  const cat  = findCategory(pId, cId);
+  const cat = findCategory(pId, cId);
 
   setModalContent(`
     <h2 class="vt pink" style="font-size:28px; margin-bottom:16px;">EDIT CATEGORY</h2>
@@ -198,7 +200,7 @@ function openEditCategory(pId, cId) {
 
 function saveCategoryEdits(pId, cId) {
   const cat = findCategory(pId, cId);
-  cat.name  = document.getElementById('catName').value;
+  cat.name = document.getElementById('catName').value;
   cat.color = document.getElementById('catColor').value;
   closeModal();
   render();
@@ -207,11 +209,11 @@ function saveCategoryEdits(pId, cId) {
 function deleteCategory(pId, cId) {
   const cat = findCategory(pId, cId);
   openDeleteConfirm({
-    label:     'category',
-    name:      cat?.name || 'this category',
-    detail:    'All tasks inside will be permanently lost.',
+    label: 'category',
+    name: cat?.name || 'this category',
+    detail: 'All tasks inside will be permanently lost.',
     onConfirm: () => {
-      const proj      = findProject(pId);
+      const proj = findProject(pId);
       proj.categories = proj.categories.filter(c => c.id !== cId);
       render();
     },
@@ -237,7 +239,7 @@ function openAddProject() {
 }
 
 function confirmAddProject() {
-  const name  = document.getElementById('pjName').value.trim();
+  const name = document.getElementById('pjName').value.trim();
   const color = document.getElementById('pjColor')?.value || '#ff2271';
   if (!name) return;
 
@@ -251,9 +253,9 @@ function confirmAddProject() {
 function deleteProject(pId) {
   const proj = findProject(pId);
   openDeleteConfirm({
-    label:     'project',
-    name:      proj?.name || 'this project',
-    detail:    'All categories, tasks and milestones will be permanently lost.',
+    label: 'project',
+    name: proj?.name || 'this project',
+    detail: 'All categories, tasks and milestones will be permanently lost.',
     onConfirm: () => {
       S.projects = S.projects.filter(p => p.id !== pId);
       if (S.selectedProjectId === pId) {
@@ -316,17 +318,17 @@ function startEditMilestone(pId, mId) {
   const milestone = findProject(pId).milestones?.find(m => m.id === mId);
   if (!milestone) return;
   editingMilestoneId = mId;
-  document.getElementById('mDate').value  = milestone.date;
+  document.getElementById('mDate').value = milestone.date;
   document.getElementById('mTitle').value = milestone.title;
 }
 
 function deleteMilestone(pId, mId) {
-  const proj      = findProject(pId);
+  const proj = findProject(pId);
   const milestone = proj.milestones?.find(m => m.id === mId);
   openDeleteConfirm({
-    label:     'milestone',
-    name:      milestone?.title || 'this milestone',
-    danger:    false,
+    label: 'milestone',
+    name: milestone?.title || 'this milestone',
+    danger: false,
     onConfirm: () => {
       proj.milestones = (proj.milestones || []).filter(m => m.id !== mId);
       openEditProject(pId);
@@ -335,11 +337,11 @@ function deleteMilestone(pId, mId) {
 }
 
 function saveProjectEdits(pId) {
-  const p     = findProject(pId);
-  p.notes     = document.getElementById('editNotes').value;
-  p.color     = document.getElementById('pjColor')?.value || p.color;
+  const p = findProject(pId);
+  p.notes = document.getElementById('editNotes').value;
+  p.color = document.getElementById('pjColor')?.value || p.color;
 
-  const date  = document.getElementById('mDate').value;
+  const date = document.getElementById('mDate').value;
   const title = document.getElementById('mTitle').value;
 
   if (date && title) {
@@ -407,7 +409,7 @@ function openAddEvent(key, hour = null) {
 }
 
 function selectEventColor(hex, swatchEl) {
-  document.getElementById('evColor').value       = hex;
+  document.getElementById('evColor').value = hex;
   document.getElementById('evColorCustom').value = hex;
   document.querySelectorAll('#modalContent [onclick^="selectEventColor"]')
     .forEach(el => el.style.borderColor = 'transparent');
@@ -415,10 +417,10 @@ function selectEventColor(hex, swatchEl) {
 }
 
 function confirmAddEvent(key) {
-  const text     = document.getElementById('evTxt').value.trim();
-  const time     = document.getElementById('evTime').value.trim();
+  const text = document.getElementById('evTxt').value.trim();
+  const time = document.getElementById('evTime').value.trim();
   const duration = Math.max(1, Number(document.getElementById('evDuration')?.value) || 1);
-  const color    = document.getElementById('evColor')?.value || 'var(--c1)';
+  const color = document.getElementById('evColor')?.value || 'var(--c1)';
   if (!text) return;
 
   if (!S.events[key]) S.events[key] = [];
@@ -430,9 +432,10 @@ function confirmAddEvent(key) {
 function deleteEvent(key, id) {
   const ev = S.events[key]?.find(e => e.id === id);
   openDeleteConfirm({
-    label:     'event',
-    name:      ev?.text || 'this event',
-    danger:    false,
+    label: 'event',
+    name: ev?.text || 'this event',
+    detail: 'This will remove it from your calendar.',
+    danger: false,
     onConfirm: () => {
       if (S.events[key]) {
         S.events[key] = S.events[key].filter(e => e.id !== id);
