@@ -1,6 +1,7 @@
 // ════════════════════════════════════════
 //  ACTIONS — User interactions & modals
 // ════════════════════════════════════════
+let pendingAction = null;
 
 // ── Modal helpers ────────────────────────────────────────
 function openModal()  { document.getElementById('modal').style.display = 'flex'; }
@@ -48,6 +49,9 @@ function toggleCat(id) {
  *   danger     - true = red accent (destructive), false = softer yellow
  */
 function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true }) {
+  // Store the actual function reference here
+  pendingAction = onConfirm; 
+
   const accent     = danger ? 'var(--c2)' : 'var(--c3)';
   const btnClass   = danger ? 'btn-danger' : 'btn-warn';
   const icon       = danger ? '⚠️' : '✕';
@@ -69,7 +73,7 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
     <div style="display:flex; gap:16px; justify-content:center;">
       <button class="btn dim" onclick="closeModal()">CANCEL</button>
       <button class="btn ${btnClass}"
-        onclick="(${onConfirm.toString()})(); closeModal();">DELETE</button>
+        onclick="pendingAction(); closeModal();">DELETE</button>
     </div>`);
 }
 
