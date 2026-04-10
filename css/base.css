@@ -218,3 +218,20 @@ body[data-theme="cyber"][data-mode="night"]::after {
   max-height:    90vh;
   overflow-y:    auto;
 }
+
+/* ── Mobile Overrides ── */
+@media (max-width: 768px) {
+  /* Force task action buttons to be visible on mobile */
+  .task-row .task-action-btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-flex !important;
+  }
+
+  /* Optional: Increase hit area for easier tapping on mobile */
+  .task-row .icon-btn {
+    width: 36px;
+    height: 36px;
+    margin-left: 4px;
+  }
+}
