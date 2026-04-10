@@ -49,7 +49,7 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
   const accent     = danger ? 'var(--c2)' : 'var(--c3)';
   const icon       = danger ? '⚠️' : '✕';
   const detailHtml = detail
-    ? `<div class="dim type-caption" style="margin-top:6px; font-size:12px;">${detail}</div>`
+    ? `<div class="dim type-caption" style="margin-top:6px; font-size:14px;">${detail}</div>`
     : '';
 
   setModalContent(`
