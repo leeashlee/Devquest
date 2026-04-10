@@ -55,7 +55,7 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
   setModalContent(`
     <div style="text-align:center; padding:8px 0 22px;">
       <div style="font-size:18px; margin-bottom:0px;">${icon}</div>
-      <div class="vt" style="font-size:18px; color:${accent}; letter-spacing:2px; margin-bottom:16px;">
+      <div class="vt" style="font-size:24px; color:${accent}; letter-spacing:2px; margin-bottom:16px;">
         DELETE ${label.toUpperCase()}?
       </div>
       <div style="color:var(--text); margin-bottom:6px; font-size:22px;">
@@ -223,7 +223,7 @@ function openAddProject() {
         style="width:70px; padding:4px;">
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim)"onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c2); border-color:var(--c2)"
         onclick="confirmAddProject()">CREATE</button>
     </div>`);
@@ -299,7 +299,7 @@ function openEditProject(pId) {
       <button class="btn" style="color:var(--c2);"
         onclick="deleteProject(${pId})">DELETE PROJECT</button>
       <div style="flex:1;"></div>
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim)" onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1);"
         onclick="saveProjectEdits(${pId})">SAVE</button>
     </div>`);
@@ -390,7 +390,7 @@ function openAddEvent(key, hour = null) {
       <input type="hidden" id="evColor" value="${swatches[0]}">
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim)" onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1);"
         onclick="confirmAddEvent('${key}')">ADD</button>
     </div>`);
