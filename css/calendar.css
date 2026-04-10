@@ -4,18 +4,18 @@
 
 /* ── Day grid wrapper ── */
 .cal-wrapper {
-  display: flex;
+  display:    flex;
   overflow-x: auto;
   min-height: 260px;
-  flex: 1;
+  flex:       1;
 }
 
 /* ── Day column ── */
 .day-col {
-  flex: 1;
-  min-width: 0;
+  flex:       1;
+  min-width:  0;
   border-right: 1px solid var(--border);
-  display: flex;
+  display:    flex;
   flex-direction: column;
   transition: all 0.3s;
 }
@@ -26,9 +26,9 @@
 
 /* ── Day header ── */
 .day-hdr {
-  padding: 8px;
-  text-align: center;
-  background: var(--surf2);
+  padding:       8px;
+  text-align:    center;
+  background:    var(--surf2);
   border-bottom: 1px solid var(--border);
 }
 
@@ -37,120 +37,121 @@
 }
 
 .day-name {
-  font-size: var(--text-sm);
+  font-size:      var(--text-sm);
   letter-spacing: var(--ls-normal);
-  color: var(--dim);
+  color:          var(--dim);
 }
 
 .day-num {
-  font-size: var(--text-d-lg);
   font-family: var(--font-display);
+  font-size:   var(--text-d-lg);
   line-height: var(--lh-snug);
 }
 
 .day-today .day-num {
-  color: var(--c1);
+  color:       var(--c1);
   font-weight: bold;
 }
 
 /* ── Day events area ── */
 .day-events {
-  display: grid;
-  gap: 10px;
-  flex: 1;
-  padding: 4px;
+  display:    grid;
+  gap:        10px;
+  flex:       1;
+  padding:    4px;
   min-height: 180px;
   overflow-y: auto;
-  position: relative;
+  position:   relative;
 }
 
 .day-events.drag-over {
   background: rgba(0, 245, 212, 0.1);
-  border: 2px dashed var(--c1);
+  border:     2px dashed var(--c1);
 }
 
 /* ── Anytime section ── */
 .slot-section {
-  border-top: 1px solid rgba(128, 128, 128, .1);
-  padding-top: 8px;
+  border-top:    1px solid rgba(128, 128, 128, .1);
+  padding-top:   8px;
   margin-bottom: 10px;
 }
 
 .slot-label {
-  font-size: var(--text-sm);
+  font-size:      var(--text-sm);
   letter-spacing: var(--ls-tight);
   text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 6px;
+  color:          var(--dim);
+  margin-bottom:  6px;
 }
 
 .anytime-section {
-  background: rgba(128, 128, 128, 0.04);
+  background:    rgba(128, 128, 128, 0.04);
   border-radius: 10px;
-  padding: 10px;
+  padding:       10px;
 }
 
 /* ── Untimed event chips ── */
 .ev-chip {
-  display: flex;
-  align-items: flex-start;
+  display:         flex;
+  align-items:     flex-start;
   justify-content: space-between;
-  padding: 4px 6px;
-  font-size: var(--text-base);
-  border-left: 3px solid currentColor;
-  border-radius: 3px;
-  background: rgba(128, 128, 128, .1);
+  padding:         4px 6px;
+  font-size:       var(--text-base);
+  border-left:     3px solid currentColor;
+  border-radius:   3px;
+  background:      rgba(128, 128, 128, .1);
 }
 
-/* ── "Add event" ghost row ── */
-.slot-add-area {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 28px;
-  padding: 6px 8px;
-  border-top: 1px dashed rgba(128, 128, 128, .18);
-  border-radius: 4px;
-  color: var(--dim);
-  font-size: var(--text-sm);
-  opacity: 0;
-  cursor: pointer;
-  transition: opacity .15s, background .15s;
+/* ── "Add event" icon button (per hour row + anytime) ── */
+.slot-add-btn {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           20px;
+  height:          20px;
+  color:           var(--dim);
+  opacity:         0;
+  cursor:          pointer;
+  border-radius:   3px;
+  transition:      opacity .15s, background .15s, color .15s;
+  flex-shrink:     0;
 }
 
-.slot-add-area::before {
-  content: '＋';
-  font-size: var(--text-md);
-  line-height: var(--lh-tight);
-}
-
-.slot-add-area:hover {
-  opacity: 1;
+.slot-add-btn:hover {
+  opacity:    1;
+  color:      var(--c1);
   background: rgba(128, 128, 128, .08);
 }
 
+/* Show button on mobile always, desktop on hover */
 @media (max-width: 900px) {
-  .slot-add-area { opacity: 1; }
+  .slot-add-btn { opacity: 1; }
+}
+
+.hour-row:hover .slot-add-btn,
+.anytime-section:hover .slot-add-btn {
+  opacity: .55;
 }
 
 /* ── Timeline ── */
 .timeline {
-  position: relative;
-  min-height: calc(17 * 50px + 8px);
-  overflow: hidden;
+  position:       relative;
+  min-height:     calc(17 * 50px + 8px);
+  overflow:       hidden;
   padding-bottom: 16px;
 }
 
 /* ── Hour row (background grid) ── */
 .hour-row {
-  display: grid;
+  display:               grid;
   grid-template-columns: 28px 1fr;
-  gap: 8px;
-  height: 50px;
-  min-height: 50px;
-  padding: 8px 6px;
-  border-top: 1px solid rgba(128, 128, 128, .12);
-  position: relative;
+  gap:                   8px;
+  height:                50px;
+  min-height:            50px;
+  padding:               8px 6px;
+  border-top:            1px solid rgba(128, 128, 128, .12);
+  position:              relative;
+  align-items:           center;
 }
 
 .hour-row.drag-over {
@@ -158,124 +159,118 @@
 }
 
 .hour-label {
-  font-size: var(--text-xs);
-  color: var(--dim);
-  text-align: center;
+  font-size:   var(--text-xs);
+  color:       var(--dim);
+  text-align:  center;
   line-height: var(--lh-base);
 }
 
 /* ── Timed event blocks (absolutely positioned) ── */
 .ev-block {
-  position: absolute;
-  display: flex;
+  position:       absolute;
+  display:        flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 0;
-  z-index: 2;
-  padding: 3px 6px;
-  border-left: 3px solid currentColor;
-  border-radius: 3px;
-  background: rgba(128, 128, 128, .1);
-  box-sizing: border-box;
-  overflow: hidden;
-  cursor: grab;
-  transition: background .12s;
+  z-index:        2;
+  padding:        3px 6px;
+  border-left:    3px solid currentColor;
+  border-radius:  3px;
+  background:     rgba(128, 128, 128, .1);
+  box-sizing:     border-box;
+  overflow:       hidden;
+  cursor:         grab;
+  transition:     background .12s;
 }
 
-.ev-block:hover {
-  background: rgba(128, 128, 128, .18);
-}
-
-.ev-block:active {
-  cursor: grabbing;
-}
+.ev-block:hover  { background: rgba(128, 128, 128, .18); }
+.ev-block:active { cursor: grabbing; }
 
 .ev-header {
-  display: flex;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: space-between;
-  gap: 4px;
-  width: 100%;
-  overflow: hidden;
+  gap:             4px;
+  width:           100%;
+  overflow:        hidden;
 }
 
 .ev-title {
-  flex: 1;
-  min-width: 0;
-  font-size: var(--text-base);
-  line-height: var(--lh-normal);
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
+  flex:          1;
+  min-width:     0;
+  font-size:     var(--text-base);
+  line-height:   var(--lh-normal);
+  color:         inherit;
+  white-space:   nowrap;
+  overflow:      hidden;
   text-overflow: ellipsis;
 }
 
-/* Delete button hidden until hover */
+/* Delete button — hidden until hover */
 .ev-block .icon-btn {
-  width: 16px;
-  height: 16px;
-  font-size: 13px;
-  padding: 0;
+  width:       16px;
+  height:      16px;
+  font-size:   13px;
+  padding:     0;
   flex-shrink: 0;
-  opacity: 0;
+  opacity:     0;
 }
 
-.ev-block:hover .icon-btn  { opacity: .7; }
-.ev-block .icon-btn:hover  { opacity: 1; }
+.ev-block:hover .icon-btn { opacity: .7; }
+.ev-block .icon-btn:hover  { opacity:  1; }
 
 /* Resize handle at bottom of block */
 .resize-handle {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  cursor: ns-resize;
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  right:      0;
+  height:     5px;
+  cursor:     ns-resize;
   transition: background .12s;
 }
 
 .ev-block:hover .resize-handle {
   background: currentColor;
-  opacity: .25;
+  opacity:    .25;
 }
 
 /* ── Mobile day picker ── */
 .mobile-day-picker {
-  display: none;
-  gap: 4px;
-  padding: 10px;
-  background: var(--surf2);
+  display:       none;
+  gap:           4px;
+  padding:       10px;
+  background:    var(--surf2);
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
+  overflow-x:    auto;
 }
 
 .mob-day-btn {
-  padding: 6px 12px;
-  border: 1px solid var(--border);
+  padding:       6px 12px;
+  border:        1px solid var(--border);
   border-radius: 4px;
-  background: var(--surf);
-  color: var(--dim);
-  cursor: pointer;
+  background:    var(--surf);
+  color:         var(--dim);
+  cursor:        pointer;
 }
 
 .mob-day-btn.active {
-  background: var(--c1);
-  color: var(--bg);
+  background:   var(--c1);
+  color:        var(--bg);
   border-color: var(--c1);
 }
 
-/* ── Mobile responsive ── */
+/* ── Responsive ── */
 @media (max-width: 900px) {
   .cal-wrapper { flex-direction: column; }
 
   .day-col {
-    display: none;
-    border-right: none;
+    display:       none;
+    border-right:  none;
     border-bottom: 1px solid var(--border);
   }
 
   .day-col.mobile-active {
-    display: flex;
+    display:    flex;
     min-height: 300px;
   }
 

@@ -13,6 +13,8 @@ function closeModalOverlay(e) {
 function setModalContent(html) {
   document.getElementById('modalContent').innerHTML = html;
   openModal();
+
+  lucide.createIcons();
 }
 
 // ── Navigation ───────────────────────────────────────────
@@ -47,14 +49,15 @@ function toggleCat(id) {
  */
 function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true }) {
   const accent     = danger ? 'var(--c2)' : 'var(--c3)';
+  const btnClass   = danger ? 'btn-danger' : 'btn-warn';
   const icon       = danger ? '⚠️' : '✕';
   const detailHtml = detail
-    ? `<div class="dim type-caption" style="margin-top:6px; font-size:14px;">${detail}</div>`
+    ? `<div class="dim type-caption" style="margin-top:6px;">${detail}</div>`
     : '';
 
   setModalContent(`
     <div style="text-align:center; padding:8px 0 22px;">
-      <div style="font-size:18px; margin-bottom:0px;">${icon}</div>
+      <div style="font-size:18px; margin-bottom:0;">${icon}</div>
       <div class="vt" style="font-size:24px; color:${accent}; letter-spacing:2px; margin-bottom:16px;">
         DELETE ${label.toUpperCase()}?
       </div>
@@ -64,8 +67,8 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
       ${detailHtml}
     </div>
     <div style="display:flex; gap:16px; justify-content:center;">
-      <button class="btn dim" style="color:var(--dim)" onclick="closeModal()">CANCEL</button>
-      <button class="btn btn-danger" style="--btn-accent:${accent};"
+      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn ${btnClass}"
         onclick="(${onConfirm.toString()})(); closeModal();">DELETE</button>
     </div>`);
 }
@@ -271,9 +274,9 @@ function openEditProject(pId) {
           <span style="flex:1; font-size:13px;">${m.date} – ${esc(m.title)}</span>
           <div style="display:flex; gap:6px;">
             <button class="btn btn-ghost icon-btn"
-              onclick="event.stopPropagation(); startEditMilestone(${pId}, ${m.id})">✎</button>
+              onclick="event.stopPropagation(); startEditMilestone(${pId}, ${m.id})"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
             <button class="btn btn-ghost icon-btn"
-              onclick="event.stopPropagation(); deleteMilestone(${pId}, ${m.id})">×</button>
+              onclick="event.stopPropagation(); deleteMilestone(${pId}, ${m.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
           </div>
         </div>`).join('')
     : '<div class="dim" style="font-size:13px; margin-top:8px;">No milestones yet.</div>';

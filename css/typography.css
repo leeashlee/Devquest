@@ -21,7 +21,7 @@
   --text-body: 17px;   /* base body size               */
   --text-cat:  16px;   /* category headers             */
 
-  /* Display scale (VT323 pixel font) */
+  /* Display scale — always paired with --font-display */
   --text-d-sm:  20px;  /* project name in work log     */
   --text-d-md:  24px;  /* panel headers (.ph-title)    */
   --text-d-lg:  26px;  /* day number in calendar       */
@@ -46,65 +46,72 @@
 }
 
 /* ════════════════════════════════════════
-   UTILITY CLASSES
-   Apply these directly in HTML/templates
-   instead of writing inline font-size.
+   FONT FAMILY HELPERS
    ════════════════════════════════════════ */
 
-/* ── Font family helpers ── */
 .font-mono    { font-family: var(--font-mono); }
 .font-display { font-family: var(--font-display); }
+.vt           { font-family: var(--font-display); } /* shorthand alias */
 
-/* Alias used throughout the codebase */
-.vt { font-family: var(--font-display); }
+/* ════════════════════════════════════════
+   COLOUR HELPERS
+   ════════════════════════════════════════ */
 
-/* ── Colour helpers ── */
 .teal   { color: var(--c1); }
 .pink   { color: var(--c2); }
 .yellow { color: var(--c3); }
 .dim    { color: var(--dim); }
 
-/* ── Size utilities ── */
-.text-xxs  { font-size: var(--text-xxs); }
-.text-xs   { font-size: var(--text-xs);  }
-.text-sm   { font-size: var(--text-sm);  }
-.text-base { font-size: var(--text-base);}
-.text-md   { font-size: var(--text-md);  }
-.text-ui   { font-size: var(--text-ui);  }
-.text-body { font-size: var(--text-body);}
+/* ════════════════════════════════════════
+   SIZE UTILITIES
+   Use these when no semantic role class fits.
+   ════════════════════════════════════════ */
 
-/* Display sizes always use the display font */
+.text-xxs  { font-size: var(--text-xxs);  }
+.text-xs   { font-size: var(--text-xs);   }
+.text-sm   { font-size: var(--text-sm);   }
+.text-base { font-size: var(--text-base); }
+.text-md   { font-size: var(--text-md);   }
+.text-ui   { font-size: var(--text-ui);   }
+.text-body { font-size: var(--text-body); }
+
+/* Display sizes always apply the display font too */
 .text-d-sm  { font-family: var(--font-display); font-size: var(--text-d-sm);  }
 .text-d-md  { font-family: var(--font-display); font-size: var(--text-d-md);  }
 .text-d-lg  { font-family: var(--font-display); font-size: var(--text-d-lg);  }
 .text-d-xl  { font-family: var(--font-display); font-size: var(--text-d-xl);  }
 .text-d-xxl { font-family: var(--font-display); font-size: var(--text-d-xxl); }
 
-/* ── Spacing utilities ── */
+/* ════════════════════════════════════════
+   LETTER SPACING UTILITIES
+   ════════════════════════════════════════ */
+
 .ls-tight  { letter-spacing: var(--ls-tight);  }
 .ls-normal { letter-spacing: var(--ls-normal); }
 .ls-wide   { letter-spacing: var(--ls-wide);   }
 
-/* ── Named component text roles ──
-   These group the tokens into semantic
-   labels so you know *what* you're styling,
-   not just *how big* it is.               */
+/* ════════════════════════════════════════
+   SEMANTIC ROLE CLASSES
+   Named after *what* they style, not
+   *how big* they are. Prefer these over
+   raw size utilities in HTML and templates.
+   ════════════════════════════════════════ */
 
-/* Wordmark: DEVQUEST_ */
+/* DEVQUEST_ header wordmark */
 .type-wordmark {
-  font-family: var(--font-display);
-  font-size:   var(--text-d-xl);
+  font-family:    var(--font-display);
+  font-size:      var(--text-d-xl);
   letter-spacing: var(--ls-wide);
 }
 
-/* Panel section titles (WEEKLY SCHEDULE, WORK LOG…) */
+/* Panel titles — WEEKLY SCHEDULE, WORK LOG… */
 .type-panel-title {
-  font-family: var(--font-display);
-  font-size:   var(--text-d-md);
+  font-family:    var(--font-display);
+  font-size:      var(--text-d-md);
   letter-spacing: var(--ls-normal);
 }
 
-/* Big project completion percentage */
+/* Big project completion % */
 .type-big-pct {
   font-family: var(--font-display);
   font-size:   var(--text-d-xxl);
@@ -118,20 +125,7 @@
   line-height: var(--lh-snug);
 }
 
-/* Project name in work log */
-.type-proj-name {
-  font-family: var(--font-display);
-  font-size:   var(--text-d-sm);
-}
-
-/* Day-of-week label (MON, TUE…) */
-.type-day-label {
-  font-size:      var(--text-sm);
-  letter-spacing: var(--ls-normal);
-  color:          var(--dim);
-}
-
-/* Small all-caps section labels (ANYTIME, MILESTONES…) */
+/* Small all-caps labels — ANYTIME, PROJECT COMPLETION… */
 .type-section-label {
   font-size:      var(--text-sm);
   letter-spacing: var(--ls-tight);
@@ -139,21 +133,7 @@
   color:          var(--dim);
 }
 
-/* Hour labels in timeline (6am, 7am…) */
-.type-hour-label {
-  font-size:   var(--text-xs);
-  line-height: var(--lh-base);
-  color:       var(--dim);
-  text-align:  center;
-}
-
-/* Event text (chips + timed blocks) */
-.type-event {
-  font-size:   var(--text-base);
-  line-height: var(--lh-normal);
-}
-
-/* Timed block title (ellipsis truncation) */
+/* Timed event block title — ellipsis overflow */
 .type-ev-title {
   font-size:     var(--text-base);
   line-height:   var(--lh-normal);
@@ -162,52 +142,24 @@
   text-overflow: ellipsis;
 }
 
-/* Task row text */
-.type-task {
-  font-size: var(--text-ui);
-}
-
-/* Category header */
-.type-category {
-  font-size: var(--text-cat);
-}
-
-/* Buttons */
-.type-btn {
-  font-family:    var(--font-mono);
-  font-size:      var(--text-md);
-  letter-spacing: var(--ls-tight);
-}
-
-/* Input fields */
-.type-input {
-  font-family: var(--font-mono);
-  font-size:   var(--text-ui);
-}
-
-/* Meta / secondary info (task count, week label, project label) */
+/* Secondary meta text — task count, week label, project label */
 .type-meta {
   font-size: var(--text-md);
 }
 
-/* Tiny captions (sprint notes, milestone dates, footer) */
+/* Small captions — sprint notes, footer, modal detail text */
 .type-caption {
   font-size: var(--text-sm);
 }
 
-/* Italic sprint note */
+/* Italic sprint note inside project body */
 .type-sprint-note {
   font-size:  var(--text-sm);
   font-style: italic;
   color:      var(--dim);
 }
 
-/* Milestone entry */
-.type-milestone {
-  font-size: var(--text-base);
-}
-
-/* Progress label above bar */
+/* Progress bar label */
 .type-prog-label {
   font-size: var(--text-md);
   color:     var(--dim);

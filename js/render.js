@@ -155,8 +155,11 @@ function renderCalendar() {
           ondragenter="dragEnter(event)"
           ondragleave="dragLeave(event)">
           <div class="hour-label">${formatHour(hour)}</div>
-          ${occupied ? '' : `<div class="slot-add-area"
-            onclick="event.stopPropagation(); openAddEvent('${key}', ${hour})">Add event</div>`}
+          ${occupied ? '' : `<button class="slot-add-btn icon-btn"
+            onclick="event.stopPropagation(); openAddEvent('${key}', ${hour})"
+            title="Add event at ${formatHour(hour)}">
+            <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
+          </button>`}
         </div>`;
     }).join('');
 
@@ -180,8 +183,11 @@ function renderCalendar() {
           <div class="slot-section anytime-section">
             <div class="slot-label">Anytime</div>
             ${untimedHtml}
-            <div class="slot-add-area"
-              onclick="event.stopPropagation(); openAddEvent('${key}', null)">Add event</div>
+            <button class="slot-add-btn icon-btn"
+              onclick="event.stopPropagation(); openAddEvent('${key}', null)"
+              title="Add anytime event">
+              <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
+            </button>
           </div>
           <div class="timeline">
             ${hourRows}
