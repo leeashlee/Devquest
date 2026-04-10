@@ -8,6 +8,7 @@
 
   <!-- Tailwind (utility classes) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,9 +33,11 @@
         DEVQUEST<span style="opacity:0.5">_</span>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <button id="modeToggle" class="btn btn-ghost icon-btn" onclick="toggleMode()"
-          title="Toggle day/night">☀️</button>
-        <button class="btn btn-ghost" onclick="openSettings()">⚙️ SETTINGS</button>
+        <button id="modeToggle" class="btn btn-ghost icon-btn" onclick="toggleMode()" title="Toggle day/night">
+          <i data-lucide="sun"></i>
+        </button>
+        <button class="btn btn-ghost" onclick="openSettings()"><i data-lucide="settings"
+            style="width:16px; height:16px;"></i></button>
       </div>
     </div>
   </header>

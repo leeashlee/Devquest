@@ -17,6 +17,7 @@ function render() {
   renderTasks();
   renderProgress();
   save();
+  lucide.createIcons();
 }
 
 // ════════════════════════════════════════
@@ -219,7 +220,7 @@ function renderTasks() {
           <div style="width:12px; height:12px; border-radius:50%; background:${proj.color};"></div>
           <span class="vt" style="flex:1; font-size:20px; color:${proj.color};">${esc(proj.name)}</span>
           <button class="btn btn-ghost icon-btn"
-            onclick="event.stopPropagation(); openEditProject(${proj.id})">✏️</button>
+            onclick="event.stopPropagation(); openEditProject(${proj.id})"><i data-lucide="pencil" style="width:16px; height:16px;"></i></button>
         </div>`;
 
     if (!isCollapsed) {
@@ -271,9 +272,9 @@ function renderTasks() {
               </span>
               <div style="display:flex; gap:4px;">
                 <button class="btn btn-ghost icon-btn"
-                  onclick="event.stopPropagation(); openEditCategory(${proj.id}, ${cat.id})">✏️</button>
+                  onclick="event.stopPropagation(); openEditCategory(${proj.id}, ${cat.id})"><i data-lucide="pencil" style="width:16px; height:16px;"></i></button>
                 <button class="btn btn-ghost icon-btn"
-                  onclick="event.stopPropagation(); deleteCategory(${proj.id}, ${cat.id})">🗑️</button>
+                  onclick="event.stopPropagation(); deleteCategory(${proj.id}, ${cat.id})"><i data-lucide="delete" style="width:16px; height:16px;"></i></button>
               </div>
             </div>`;
 

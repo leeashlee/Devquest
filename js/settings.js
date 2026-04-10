@@ -48,9 +48,20 @@ function toggleMode() {
 function updateModeToggle() {
   const btn = document.getElementById('modeToggle');
   if (!btn) return;
-  const isDay      = S.mode === 'day';
-  btn.textContent  = isDay ? '🌙' : '☀️';
-  btn.title        = isDay ? 'Switch to night mode' : 'Switch to day mode';
+
+  const isDay = S.mode === 'day';
+  
+  // 1. Change the HTML inside to a new icon placeholder
+  // We use innerHTML here to put the <i> tag back in
+  btn.innerHTML = `<i data-lucide="${isDay ? 'moon' : 'sun'}"></i>`;
+  
+  // 2. Update the title
+  btn.title = isDay ? 'Switch to night mode' : 'Switch to day mode';
+
+  // 3. IMPORTANT: Tell Lucide to find that new <i> tag and turn it into an SVG
+  if (window.lucide) {
+    lucide.createIcons();
+  }
 }
 
 // ── Export / Import ───────────────────────────────────────
