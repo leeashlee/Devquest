@@ -68,7 +68,7 @@ function updateModeToggle() {
 
   // 1. Change the HTML inside to a new icon placeholder
   // We use innerHTML here to put the <i> tag back in
-  btn.innerHTML = `<i data-lucide="${isDay ? 'moon' : 'sun'}"></i>`;
+  btn.innerHTML = `<i data-lucide="${isDay ? 'moon' : 'sun'}" style="width:16px; height:16px;"></i>`;
 
   // 2. Update the title
   btn.title = isDay ? 'Switch to night mode' : 'Switch to day mode';
