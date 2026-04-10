@@ -15,6 +15,25 @@ function setModalContent(html) {
   openModal();
 }
 
+// ── Navigation ───────────────────────────────────────────
+function prevWeek() { S.weekStart = addDays(S.weekStart, -7); render(); }
+function nextWeek() { S.weekStart = addDays(S.weekStart,  7); render(); }
+function goToday()  { S.weekStart = getMonday(new Date());    render(); }
+
+function setMobileDay(idx) { activeMobileDay = idx; renderCalendar(); }
+
+// ── Project collapse / selection ─────────────────────────
+function toggleProj(id) {
+  S.collapsedProj[id] = !S.collapsedProj[id];
+  S.selectedProjectId = id;
+  render();
+}
+
+function toggleCat(id) {
+  S.collapsedCat[id] = !S.collapsedCat[id];
+  render();
+}
+
 // ── Delete confirmation modal ─────────────────────────────
 /**
  * Opens a styled confirmation modal before any deletion.
@@ -90,17 +109,9 @@ function toggleTask(pId, cId, tId) {
 }
 
 function deleteTask(pId, cId, tId) {
-  const t = findTask(pId, cId, tId);
-  openDeleteConfirm({
-    label:     'task',
-    name:      t?.text || 'this task',
-    danger:    false,
-    onConfirm: () => {
-      const cat = findCategory(pId, cId);
-      cat.tasks = cat.tasks.filter(t => t.id !== tId);
-      render();
-    },
-  });
+  const cat = findCategory(pId, cId);
+  cat.tasks = cat.tasks.filter(t => t.id !== tId);
+  render();
 }
 
 function changeTaskDuration(pId, cId, tId, ev) {
@@ -115,7 +126,7 @@ function cycleTaskPriority(pId, cId, tId) {
   const order = ['High', 'Med', 'Low'];
   t.priority  = order[(order.indexOf(t.priority) + 1) % order.length];
 
-  // Sync linked calendar events — Number() guards against string/number mismatches
+  // Sync linked calendar events — Number() guards against string/number mismatches after JSON round-trips
   for (const dayEvents of Object.values(S.events)) {
     for (const calEv of dayEvents) {
       if (calEv.taskRef &&
