@@ -154,7 +154,7 @@ function openAddCategory(pId) {
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button class="btn dim" onclick="closeModal()">CANCEL</button>
-      <button class="btn" style="color:var(--c2); border-color:var(--c2)"
+      <button class="btn btn-primary"
         onclick="confirmAddCategory(${pId})">CREATE</button>
     </div>`);
 }
@@ -224,7 +224,7 @@ function openAddProject() {
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button class="btn dim" style="color:var(--dim)"onclick="closeModal()">CANCEL</button>
-      <button class="btn" style="color:var(--c2); border-color:var(--c2)"
+      <button class="btn btn-primary"
         onclick="confirmAddProject()">CREATE</button>
     </div>`);
 }
@@ -300,7 +300,7 @@ function openEditProject(pId) {
         onclick="deleteProject(${pId})">DELETE PROJECT</button>
       <div style="flex:1;"></div>
       <button class="btn dim" style="color:var(--dim)" onclick="closeModal()">CANCEL</button>
-      <button class="btn" style="color:var(--c1); border-color:var(--c1);"
+      <button class="btn btn-primary"
         onclick="saveProjectEdits(${pId})">SAVE</button>
     </div>`);
 }

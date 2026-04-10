@@ -121,7 +121,21 @@ body[data-theme="cyber"][data-mode="night"]::after {
 
 .btn-danger:hover {
   background: transparent;
+  color: var(--c2);
   border: 1px solid var(--c2);
+}
+
+/* Target the specific danger button */
+.btn-primary {
+  background: var(--c1);
+  border-color: transparent;
+  color: inherit; /* Or whatever contrast color you need */
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--c1);
+  border: 1px solid var(--c1);
 }
 /* ── Inputs ── */
 .inp {
