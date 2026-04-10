@@ -80,6 +80,9 @@ body[data-theme="cyber"][data-mode="night"]::after {
   letter-spacing: var(--ls-tight);
   cursor:         pointer;
   transition:     background .15s, color .15s, border-color .15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover {

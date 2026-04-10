@@ -4,27 +4,42 @@
 
 function openSettings() {
   setModalContent(`
-    <h2 class="vt" style="font-size:28px; margin-bottom:16px; color:var(--text);">SETTINGS</h2>
+    <h2 class="vt" style="font-size:28px; margin-bottom:20px; color:var(--c1); letter-spacing:2px;">
+      ⚙ SETTINGS
+    </h2>
 
-    <div style="margin-bottom:20px;">
-      <label class="dim" style="font-size:12px; display:block; margin-bottom:8px;">THEME</label>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" onclick="setTheme('cyber')">Cyber</button>
-        <button class="btn" onclick="setTheme('y2k')">Y2K</button>
-        <button class="btn" onclick="setTheme('zen')">Zen</button>
-        <button class="btn" onclick="setTheme('cottagecore')">Cottagecore</button>
-      </div>
+    <label class="dim type-caption" style="display:block; margin-bottom:8px; letter-spacing:2px;">
+      THEME
+    </label>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px;">
+      <button class="btn" onclick="setTheme('cyber')"
+        style="color:var(--dim); border-color:#0c73ff;">Cyber</button>
+      <button class="btn" onclick="setTheme('y2k')"
+        style="color:var(--dim); border-color:#f472b6;">Y2K</button>
+      <button class="btn" onclick="setTheme('zen')"
+        style="color:var(--dim); border-color:#607c64;">Zen</button>
+      <button class="btn" onclick="setTheme('cottagecore')"
+        style="color:var(--dim); border-color:#8a9a5b;">Cottagecore</button>
     </div>
 
-    <div style="border-top:1px solid var(--border); padding-top:16px; display:flex; gap:10px;">
-      <button class="btn" style="color:var(--c3); border-color:var(--c3); flex:1;"
-        onclick="exportData()">EXPORT JSON</button>
-      <button class="btn" style="color:var(--c4); border-color:var(--c4); flex:1;"
-        onclick="importData()">IMPORT JSON</button>
+    <label class="dim type-caption" style="display:block; margin-bottom:8px; letter-spacing:2px;">
+      DATA
+    </label>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px;">
+      <button class="btn" style="color:var(--text); border-color:var(--text);"
+        onclick="exportData()">
+        <i data-lucide="download" style="width:13px; height:13px; margin-right:5px;"></i>
+        EXPORT
+      </button>
+      <button class="btn" style="color:var(--text); border-color:var(--text);"
+        onclick="importData()">
+        <i data-lucide="upload" style="width:13px; height:13px; margin-right:5px;"></i>
+        IMPORT
+      </button>
     </div>
 
-    <div style="text-align:right; margin-top:20px;">
-      <button class="btn dim" onclick="closeModal()">CLOSE</button>
+    <div style="display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="closeModal()">DONE</button>
     </div>`);
 }
 
@@ -50,11 +65,11 @@ function updateModeToggle() {
   if (!btn) return;
 
   const isDay = S.mode === 'day';
-  
+
   // 1. Change the HTML inside to a new icon placeholder
   // We use innerHTML here to put the <i> tag back in
   btn.innerHTML = `<i data-lucide="${isDay ? 'moon' : 'sun'}"></i>`;
-  
+
   // 2. Update the title
   btn.title = isDay ? 'Switch to night mode' : 'Switch to day mode';
 
@@ -66,23 +81,23 @@ function updateModeToggle() {
 
 // ── Export / Import ───────────────────────────────────────
 function exportData() {
-  const json   = JSON.stringify(S, null, 2);
-  const url    = 'data:text/json;charset=utf-8,' + encodeURIComponent(json);
+  const json = JSON.stringify(S, null, 2);
+  const url = 'data:text/json;charset=utf-8,' + encodeURIComponent(json);
   const anchor = Object.assign(document.createElement('a'), {
-    href:     url,
+    href: url,
     download: 'devquest_backup.json',
   });
   anchor.click();
 }
 
 function importData() {
-  const input  = Object.assign(document.createElement('input'), {
-    type:   'file',
+  const input = Object.assign(document.createElement('input'), {
+    type: 'file',
     accept: '.json',
   });
 
   input.onchange = e => {
-    const file   = e.target.files[0];
+    const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();

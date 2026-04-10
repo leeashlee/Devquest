@@ -305,8 +305,16 @@ function renderTasks() {
                   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
                   title="Priority: ${t.priority} — click to change"></span>
                 <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
-                <button class="btn btn-ghost icon-btn"
-                  onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})">×</button>
+                <button class="btn btn-ghost icon-btn task-action-btn"
+                  onclick="event.stopPropagation(); openEditTask(${proj.id}, ${cat.id}, ${t.id})"
+                  title="Edit task">
+                  <i data-lucide="pencil" style="width:13px; height:13px;"></i>
+                </button>
+                <button class="btn btn-ghost icon-btn task-action-btn"
+                  onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})"
+                  title="Delete task">
+                  <i data-lucide="trash-2" style="width:13px; height:13px;"></i>
+                </button>
               </div>`;
           }
 

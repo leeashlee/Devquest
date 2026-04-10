@@ -56,7 +56,7 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
   const btnClass = danger ? 'btn-danger' : 'btn-warn';
   const icon = danger ? 'alert-triangle' : 'x';
   const detailHtml = detail
-    ? `<div class="dim type-caption" style="margin-top:6px;">${detail}</div>`
+    ? `<div class="dim type-caption" style="margin-top:6px; font-size:14px;">${detail}</div>`
     : '';
 
   setModalContent(`
@@ -67,13 +67,14 @@ function openDeleteConfirm({ label, name, detail = '', onConfirm, danger = true 
       <div class="vt" style="font-size:24px; color:${accent}; letter-spacing:2px; margin-bottom:8px;">
         DELETE ${label.toUpperCase()}?
       </div>
-      <div style="color:var(--text); margin-bottom:6px; font-size:21px;">
+      <div style="color:var(--text); margin-bottom:6px; font-size:20px;">
         <strong>${esc(name)}</strong>
       </div>
       ${detailHtml}
     </div>
     <div style="display:flex; gap:16px; justify-content:center;">
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim); border:var(--dim);"
+        onclick="closeModal()">CANCEL</button>
       <button class="btn ${btnClass}"
         onclick="pendingAction(); closeModal();">DELETE</button>
     </div>`);
@@ -118,8 +119,56 @@ function toggleTask(pId, cId, tId) {
 }
 
 function deleteTask(pId, cId, tId) {
-  const cat = findCategory(pId, cId);
-  cat.tasks = cat.tasks.filter(t => t.id !== tId);
+  const t = findTask(pId, cId, tId);
+  openDeleteConfirm({
+    label: 'task',
+    name: t?.text || 'this task',
+    detail: 'This action cannot be undone.',
+    danger: false,
+    onConfirm: () => {
+      const cat = findCategory(pId, cId);
+      cat.tasks = cat.tasks.filter(x => x.id !== tId);
+      render();
+    },
+  });
+}
+
+function openEditTask(pId, cId, tId) {
+  const t = findTask(pId, cId, tId);
+  if (!t) return;
+
+  setModalContent(`
+    <h2 class="vt teal" style="font-size:28px; margin-bottom:16px;">EDIT TASK</h2>
+    <label class="dim type-caption" style="display:block; margin-bottom:6px; font-size:14px;">TASK NAME</label>
+    <input class="inp" id="editTaskText" value="${esc(t.text)}"
+      style="margin-bottom:20px;" autofocus>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn dim" style="color:var(--dim); border:var(--dim);"
+        onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-primary" onclick="saveTaskEdit(${pId}, ${cId}, ${tId})">SAVE</button>
+    </div>`);
+}
+
+function saveTaskEdit(pId, cId, tId) {
+  const text = document.getElementById('editTaskText')?.value.trim();
+  if (!text) return;
+  const t = findTask(pId, cId, tId);
+  if (!t) return;
+  t.text = text;
+
+  // Keep any linked calendar events in sync
+  for (const dayEvents of Object.values(S.events)) {
+    for (const calEv of dayEvents) {
+      if (calEv.taskRef &&
+        Number(calEv.taskRef.pId) === Number(pId) &&
+        Number(calEv.taskRef.cId) === Number(cId) &&
+        Number(calEv.taskRef.tId) === Number(tId)) {
+        calEv.text = text;
+      }
+    }
+  }
+
+  closeModal();
   render();
 }
 
@@ -162,7 +211,8 @@ function openAddCategory(pId) {
         style="width:70px; padding:4px;">
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim); border:var(--dim);"
+        onclick="closeModal()">CANCEL</button>
       <button class="btn btn-primary"
         onclick="confirmAddCategory(${pId})">CREATE</button>
     </div>`);
@@ -192,7 +242,8 @@ function openEditCategory(pId, cId) {
         value="${cat.color || proj.color || '#8ba888'}" style="width:70px; padding:4px;">
     </div>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
-      <button class="btn dim" onclick="closeModal()">CANCEL</button>
+      <button class="btn dim" style="color:var(--dim); border:var(--dim);"
+        onclick="closeModal()">CANCEL</button>
       <button class="btn" style="color:var(--c1); border-color:var(--c1)"
         onclick="saveCategoryEdits(${pId}, ${cId})">SAVE</button>
     </div>`);

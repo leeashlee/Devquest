@@ -44,6 +44,20 @@
 .task-row:active           { cursor: grabbing; }
 .task-row.done .task-txt   { text-decoration: line-through; opacity: .4; }
 
+/* Action buttons (edit, delete) hidden until row is hovered */
+.task-action-btn {
+  opacity:    0;
+  transition: opacity .12s;
+}
+
+.task-row:hover .task-action-btn {
+  opacity: .55;
+}
+
+.task-row .task-action-btn:hover {
+  opacity: 1;
+}
+
 /* ── Progress bar ── */
 .prog-track {
   height:        12px;

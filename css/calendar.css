@@ -275,4 +275,19 @@
   }
 
   .mobile-day-picker { display: flex; }
+
+  /* Larger labels on mobile so they're readable at a glance */
+  .day-name {
+    font-size:      var(--text-md);
+    letter-spacing: var(--ls-tight);
+  }
+
+  .day-num {
+    font-size: var(--text-d-xl);
+  }
+
+  .mob-day-btn {
+    font-size: var(--text-md);
+    padding:   8px 14px;
+  }
 }
