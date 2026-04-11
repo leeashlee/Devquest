@@ -25,6 +25,15 @@ function goToday() { S.weekStart = getMonday(new Date()); render(); }
 
 function setMobileDay(idx) { activeMobileDay = idx; renderCalendar(); }
 
+// ── Mobile tab switcher (schedule ↔ work log) ────────────
+function setMobileTab(tab) {
+  document.getElementById('tab-schedule').classList.toggle('active', tab === 'schedule');
+  document.getElementById('tab-worklog').classList.toggle('active', tab === 'worklog');
+  document.getElementById('panel-schedule').classList.toggle('mobile-hidden', tab !== 'schedule');
+  document.getElementById('panel-worklog').classList.toggle('mobile-hidden', tab !== 'worklog');
+}
+
+
 // ── Project collapse / selection ─────────────────────────
 function toggleProj(id) {
   S.collapsedProj[id] = !S.collapsedProj[id];

@@ -219,18 +219,103 @@ body[data-theme="cyber"][data-mode="night"]::after {
   overflow-y:    auto;
 }
 
-/* ── Mobile Overrides ── */
-@media (max-width: 768px) {
-  /* Force task action buttons to be visible on mobile */
-  .task-row .task-action-btn {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: inline-flex !important;
+/* ════════════════════════════════════════
+   MOBILE — Overrides for small screens
+   ════════════════════════════════════════ */
+
+/* ── Mobile tab bar — schedule / work log switcher ── */
+.mobile-tab-bar {
+  display:  none; /* hidden on desktop */
+  gap:      0;
+  position: sticky;
+  top:      60px;  /* sit below the header */
+  z-index:  40;
+  background: var(--surf2);
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-tab {
+  flex:            1;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             6px;
+  padding:         12px 8px;
+  background:      transparent;
+  border:          none;
+  border-bottom:   2px solid transparent;
+  color:           var(--dim);
+  font-family:     var(--font-mono);
+  font-size:       var(--text-md);
+  letter-spacing:  var(--ls-tight);
+  cursor:          pointer;
+  transition:      color .15s, border-color .15s;
+}
+
+.mobile-tab.active {
+  color:        var(--c1);
+  border-color: var(--c1);
+}
+
+/* Panel hidden on mobile when its tab isn't active */
+.mobile-hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  /* Show the tab bar */
+  .mobile-tab-bar {
+    display: flex;
   }
 
-  /* Optional: Increase hit area for easier tapping on mobile */
-  .task-row .icon-btn {
-    width: 36px;
-    height: 36px;
+  /* Header: smaller wordmark, less padding */
+  .type-wordmark {
+    font-size: var(--text-d-lg) !important;
+  }
+
+  /* Progress panel: compact layout, smaller % number */
+  .type-big-pct {
+    font-size: var(--text-d-lg) !important;
+  }
+
+  /* Bigger touch targets for all buttons */
+  .btn {
+    padding:     8px 14px;
+    font-size:   var(--text-ui);
+    min-height:  44px;
+  }
+
+  .btn-ghost {
+    min-height: 44px;
+    padding:    8px;
+  }
+
+  .icon-btn {
+    width:  44px;
+    height: 44px;
+  }
+
+  /* Task action buttons always visible on mobile */
+  .task-action-btn {
+    opacity: .7 !important;
+  }
+
+  /* Larger priority dot on mobile */
+  .task-row .priority-dot {
+    width:  14px !important;
+    height: 14px !important;
+  }
+
+  /* Task row: bigger, easier to tap */
+  .task-row {
+    padding:    12px 14px 12px 20px;
+    min-height: 52px;
+    gap:        12px;
+  }
+
+  /* Checkbox: bigger tap target */
+  .task-row input[type="checkbox"] {
+    width:  20px !important;
+    height: 20px !important;
   }
 }

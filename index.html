@@ -67,11 +67,25 @@
       </div>
     </section>
 
+    <!-- Mobile tab switcher — only visible on small screens -->
+    <div class="mobile-tab-bar" id="mobileTabBar">
+      <button class="mobile-tab active" id="tab-schedule"
+        onclick="setMobileTab('schedule')">
+        <i data-lucide="calendar" style="width:15px;height:15px;"></i>
+        SCHEDULE
+      </button>
+      <button class="mobile-tab" id="tab-worklog"
+        onclick="setMobileTab('worklog')">
+        <i data-lucide="list-checks" style="width:15px;height:15px;"></i>
+        WORK LOG
+      </button>
+    </div>
+
     <!-- Bottom: calendar + work log -->
     <div class="bottom-split">
 
       <!-- Calendar -->
-      <section class="panel" style="display:flex; flex-direction:column;">
+      <section class="panel" id="panel-schedule" style="display:flex; flex-direction:column;">
         <div class="ph">
           <span class="vt teal ph-title">WEEKLY SCHEDULE</span>
           <div style="display:flex; align-items:center; gap:10px;">
@@ -86,7 +100,7 @@
       </section>
 
       <!-- Work log / tasks -->
-      <section class="panel" style="display:flex; flex-direction:column;">
+      <section class="panel" id="panel-worklog" style="display:flex; flex-direction:column;">
         <div class="ph">
           <span class="vt pink ph-title">WORK LOG</span>
           <button class="btn" style="color:var(--c2); border-color:var(--c2);" onclick="openAddProject()">+

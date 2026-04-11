@@ -33,5 +33,21 @@ main, .bottom-split, .panel {
 @media (max-width: 900px) {
   .bottom-split {
     grid-template-columns: 1fr;
+    gap: 0; /* no gap — tab bar handles separation */
+  }
+
+  /* Progress panel more compact on mobile */
+  .top-row .ph {
+    padding: 10px 14px;
+  }
+
+  .top-row > div[style] {
+    padding: 12px 14px !important;
+  }
+
+  /* App container tighter on mobile */
+  .app-container {
+    gap:     8px;
+    padding: 8px;
   }
 }
