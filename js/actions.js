@@ -2,6 +2,7 @@
 //  ACTIONS — User interactions & modals
 // ════════════════════════════════════════
 let pendingAction = null;
+let pendingMobileTask = null; // ADD THIS
 
 // ── Modal helpers ────────────────────────────────────────
 function openModal() { document.getElementById('modal').style.display = 'flex'; }
@@ -109,6 +110,17 @@ function toggleCat(id) {
 }
 
 // ── Tasks ────────────────────────────────────────────────
+function prepareMobileDrop(text, color, duration, priority, pId, cId, tId) {
+  // 1. Save the task details
+  pendingMobileTask = { text, color, duration, priority, pId, cId, tId };
+
+  // 2. Switch to the calendar tab
+  setMobileTab('schedule');
+
+  // 3. Tell the user what to do next
+  alert("Task selected! Tap any '+' button on the calendar to place it.");
+}
+
 function addTask(pId, cId, ev) {
   const text = ev.target.value.trim();
   if (!text) return;
@@ -421,6 +433,25 @@ function saveProjectEdits(pId) {
 
 // ── Calendar events ──────────────────────────────────────
 function openAddEvent(key, hour = null) {
+  if (pendingMobileTask) {
+    const timeStr = typeof hour === 'number' ? formatHour(hour) : '';
+
+    if (!S.events[key]) S.events[key] = [];
+    S.events[key].push({
+      id: String(S.nextId++),
+      text: pendingMobileTask.text,
+      time: timeStr,
+      color: pendingMobileTask.color,
+      duration: pendingMobileTask.duration,
+      priority: pendingMobileTask.priority,
+      taskRef: { pId: pendingMobileTask.pId, cId: pendingMobileTask.cId, tId: pendingMobileTask.tId }
+    });
+
+    pendingMobileTask = null; // Clear it out so it doesn't get stuck
+    render();
+    return; // Stop the normal modal from opening
+  }
+
   const defaultTime = typeof hour === 'number' ? formatHour(hour) : '';
 
   const swatches = [

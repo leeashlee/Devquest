@@ -79,6 +79,8 @@ function computeTimedLayout(evts) {
 
 function renderCalendar() {
   const ws = S.weekStart;
+  const isMobile = window.innerWidth <= 900;
+  const currentHourHeight = isMobile ? 60 : 50; // Match your CSS height
   const hours = Array.from({ length: 17 }, (_, i) => i + 6); // 6am–10pm
 
   document.getElementById('weekLabel').textContent =
@@ -100,10 +102,13 @@ function renderCalendar() {
 
     // Absolutely-positioned timed blocks
     const eventBlocks = timedLayout.map(item => {
-      const top = (item.start - 6) * HOUR_HEIGHT + 4;
-      const height = Math.max(HOUR_HEIGHT - 8, item.duration * HOUR_HEIGHT - 8);
-      const left = `calc(44px + ${item.lane * 10}px)`;
-      const width = `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
+      // Use the dynamic height for positioning
+      const top = (item.start - 6) * currentHourHeight + 4;
+      const height = Math.max(currentHourHeight - 8, item.duration * currentHourHeight - 8);
+      const left = isMobile ? `calc(36px + ${item.lane * 10}px)` : `calc(44px + ${item.lane * 10}px)`;
+      const width = isMobile
+        ? `calc(${100 / columnCount}% - 44px - ${item.lane * 10}px)`
+        : `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
       const ev = item.ev;
       const prioDot = ev.priority
         ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
@@ -309,16 +314,21 @@ function renderTasks() {
                   <span class="task-txt" style="flex:1;">${esc(t.text)}</span>
                   
                   <div style="display: flex; align-items: center;">
-                      <button class="btn btn-ghost icon-btn task-action-btn"
-                        onclick="event.stopPropagation(); openEditTask(${proj.id}, ${cat.id}, ${t.id})"
-                        title="Edit task">
-                        <i data-lucide="pencil" style="width:13px; height:13px;"></i>
-                      </button>
-                      <button class="btn btn-ghost icon-btn task-action-btn"
-                        onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})"
-                        title="Delete task">
-                        <i data-lucide="x" style="width:13px; height:13px;"></i>
-                      </button>
+                    <button class="btn btn-ghost icon-btn task-action-btn mobile-only-btn"
+                      onclick="event.stopPropagation(); prepareMobileDrop('${esc(t.text)}', '${catColor}', ${t.duration || 1}, '${t.priority || 'Med'}', ${proj.id}, ${cat.id}, ${t.id})"
+                      title="Schedule task">
+                      <i data-lucide="calendar-plus" style="width:13px; height:13px;"></i>
+                    </button>
+                    <button class="btn btn-ghost icon-btn task-action-btn"
+                      onclick="event.stopPropagation(); openEditTask(${proj.id}, ${cat.id}, ${t.id})"
+                      title="Edit task">
+                      <i data-lucide="pencil" style="width:13px; height:13px;"></i>
+                    </button>
+                    <button class="btn btn-ghost icon-btn task-action-btn"
+                      onclick="deleteTask(${proj.id}, ${cat.id}, ${t.id})"
+                      title="Delete task">
+                      <i data-lucide="x" style="width:13px; height:13px;"></i>
+                    </button>
                   </div>
               </div>`;
           }
@@ -381,3 +391,18 @@ function renderProgress() {
   document.getElementById('taskCount').textContent = `${tDone} / ${tAll} tasks completed`;
   document.getElementById('projectLabel').textContent = `Project: ${project.name}`;
 }
+
+let lastWidth = window.innerWidth;
+
+window.addEventListener('resize', () => {
+  // Only trigger a full re-render if we cross the mobile/desktop threshold
+  // or if the width changed significantly (more than 50px)
+  const currentWidth = window.innerWidth;
+  const crossedBreakpoint = (lastWidth > 900 && currentWidth <= 900) || 
+                            (lastWidth <= 900 && currentWidth > 900);
+
+  if (crossedBreakpoint || Math.abs(currentWidth - lastWidth) > 50) {
+    render();
+    lastWidth = currentWidth;
+  }
+});

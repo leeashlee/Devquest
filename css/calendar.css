@@ -316,28 +316,43 @@
   border-color: var(--c1);
 }
 
+:root {
+  --hour-h: 50px;
+}
+
+.hour-row {
+  height: var(--hour-h);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
+
+  :root {
+    --hour-h: 60px;
+  }
+
   .cal-wrapper {
     flex-direction: column;
   }
 
   .day-col {
-    display:       none;
-    border-right:  none;
+    display: none;
+    border-right: none;
     border-bottom: 1px solid var(--border);
   }
 
   .day-col.mobile-active {
-    display:    flex;
+    display: flex;
     min-height: 300px;
   }
 
-  .mobile-day-picker { display: flex; }
+  .mobile-day-picker {
+    display: flex;
+  }
 
   /* Larger labels */
   .day-name {
-    font-size:      var(--text-md);
+    font-size: var(--text-md);
     letter-spacing: var(--ls-tight);
   }
 
@@ -347,27 +362,27 @@
 
   /* Bigger touch-friendly day picker buttons */
   .mob-day-btn {
-    font-size:  var(--text-md);
-    padding:    10px 14px;
+    font-size: var(--text-md);
+    padding: 10px 14px;
     min-height: 44px;
   }
 
   /* Taller hour rows for easier tap */
   .hour-row {
-    height:     60px;
+    height: 60px;
     min-height: 60px;
   }
 
   /* Add-event button always visible and bigger on mobile */
   .slot-add-btn {
     opacity: .7;
-    width:   32px;
-    height:  32px;
+    width: 32px;
+    height: 32px;
   }
 
   /* Anytime chips more comfortable to read */
   .ev-chip {
-    padding:    6px 8px;
+    padding: 6px 8px;
     min-height: 36px;
   }
 }
