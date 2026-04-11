@@ -340,12 +340,28 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .resize-handle {
-    height: 12px;
-    /* Slightly thicker visual for mobile */
-    background: rgba(255, 255, 255, 0.1);
-    /* Subtle hint it's there */
+    height: 16px;
+    /* tall enough for a thumb */
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 0 0 3px 3px;
+    /* Always visible on mobile so users know it's there */
+    opacity: 1 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  /* Three grip dots as a visual affordance */
+  .resize-handle::before {
+    content: '· · ·';
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: currentColor;
+    opacity: .6;
+    pointer-events: none;
+  }
+
+  /* Even bigger touch hit area on mobile */
   .resize-handle::after {
     top: -20px;
     /* Even bigger hit area for thumbs */
@@ -400,7 +416,7 @@
 
   /* Add-event button always visible and bigger on mobile */
   .slot-add-btn {
-    opacity: .7;
+    opacity: .7 !important; 
     width: 32px;
     height: 32px;
   }

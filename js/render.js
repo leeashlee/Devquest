@@ -128,7 +128,7 @@ function renderCalendar() {
               onclick="event.stopPropagation(); deleteEvent('${key}', '${ev.id}')">×</button>
           </div>
           <div class="resize-handle"
-            onmousedown="startResizeEvent(event, '${key}', '${ev.id}')"
+            onpointerdown="startResizeEvent(event, '${key}', '${ev.id}')"
             title="Drag to resize"></div>
         </div>`;
     }).join('');
@@ -398,8 +398,8 @@ window.addEventListener('resize', () => {
   // Only trigger a full re-render if we cross the mobile/desktop threshold
   // or if the width changed significantly (more than 50px)
   const currentWidth = window.innerWidth;
-  const crossedBreakpoint = (lastWidth > 900 && currentWidth <= 900) || 
-                            (lastWidth <= 900 && currentWidth > 900);
+  const crossedBreakpoint = (lastWidth > 900 && currentWidth <= 900) ||
+    (lastWidth <= 900 && currentWidth > 900);
 
   if (crossedBreakpoint || Math.abs(currentWidth - lastWidth) > 50) {
     render();
