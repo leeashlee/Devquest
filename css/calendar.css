@@ -281,9 +281,22 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 5px;
+  height: 8px;
+  /* Visual height */
   cursor: ns-resize;
-  transition: background .12s;
+  z-index: 10;
+}
+
+/* Create a massive invisible hit area for touch */
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  /* Expand 10px up */
+  bottom: -10px;
+  /* Expand 10px down */
+  left: 0;
+  right: 0;
 }
 
 .ev-block:hover .resize-handle {
@@ -326,6 +339,18 @@
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
+  .resize-handle {
+    height: 12px;
+    /* Slightly thicker visual for mobile */
+    background: rgba(255, 255, 255, 0.1);
+    /* Subtle hint it's there */
+  }
+
+  .resize-handle::after {
+    top: -20px;
+    /* Even bigger hit area for thumbs */
+    bottom: -20px;
+  }
 
   :root {
     --hour-h: 60px;

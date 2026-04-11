@@ -81,13 +81,18 @@ function startResizeEvent(ev, dateKey, eventId) {
 function handleResizeMove(ev) {
   if (!resizingEvent) return;
 
-  const deltaY    = ev.clientY - resizeStartY;
-  const deltaHours = Math.round(deltaY / HOUR_HEIGHT);
-  const dayEvts   = S.events[resizingEvent.dateKey] || [];
+  // 1. Get the CURRENT hour height based on the screen width
+  const isMobile = window.innerWidth <= 900;
+  const currentHourHeight = isMobile ? 60 : 50; 
 
-  // Clamp so the event can't extend past 10pm
-  const target      = dayEvts.find(e => e.id === resizingEvent.eventId);
-  const startHour   = parseEventHour(target?.time) || 6;
+  const deltaY = ev.clientY - resizeStartY;
+  
+  // 2. Use the dynamic height for the calculation
+  const deltaHours = Math.round(deltaY / currentHourHeight);
+  
+  const dayEvts = S.events[resizingEvent.dateKey] || [];
+  const target = dayEvts.find(e => e.id === resizingEvent.eventId);
+  const startHour = parseEventHour(target?.time) || 6;
   const maxDuration = 22 - startHour;
   const newDuration = Math.min(Math.max(1, resizeInitialDuration + deltaHours), maxDuration);
 
