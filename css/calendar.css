@@ -149,32 +149,26 @@
 
 /* ── "Add event" icon button (per hour row + anytime) ── */
 .slot-add-btn {
-  display: flex;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: var(--dim);
-  opacity: 0;
-  cursor: pointer;
-  border-radius: 3px;
-  transition: opacity .15s, background .15s, color .15s;
-  flex-shrink: 0;
+  width:           20px;
+  height:          20px;
+  color:           var(--dim);
+  opacity:         0;       /* hidden on desktop until parent is hovered */
+  cursor:          pointer;
+  border-radius:   3px;
+  transition:      opacity .15s, background .15s, color .15s;
+  flex-shrink:     0;
 }
 
 .slot-add-btn:hover {
-  opacity: 1;
-  color: var(--c1);
+  opacity:    1;
+  color:      var(--c1);
   background: rgba(128, 128, 128, .08);
 }
 
-/* Show button on mobile always, desktop on hover */
-@media (max-width: 900px) {
-  .slot-add-btn {
-    opacity: 1;
-  }
-}
-
+/* Reveal when parent row/section is hovered on desktop */
 .hour-row:hover .slot-add-btn,
 .anytime-section:hover .slot-add-btn {
   opacity: .55;
@@ -182,9 +176,9 @@
 
 /* ── Timeline ── */
 .timeline {
-  position: relative;
-  min-height: calc(17 * 50px + 8px);
-  overflow: hidden;
+  position:       relative;
+  min-height:     calc(17 * var(--hour-h) + 8px); /* uses --hour-h so it scales on mobile */
+  overflow:       hidden;
   padding-bottom: 16px;
 }
 
@@ -277,31 +271,29 @@
 
 /* Resize handle at bottom of block */
 .resize-handle {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 8px;
-  /* Visual height */
-  cursor: ns-resize;
-  z-index: 10;
+  position:     absolute;
+  bottom:       0;
+  left:         0;
+  right:        0;
+  height:       8px;
+  cursor:       ns-resize;
+  touch-action: none; /* CRITICAL: tells browser this touch belongs to JS, not scroll */
+  z-index:      10;
 }
 
-/* Create a massive invisible hit area for touch */
+/* Invisible extended hit area */
 .resize-handle::after {
-  content: '';
+  content:  '';
   position: absolute;
-  top: -10px;
-  /* Expand 10px up */
-  bottom: -10px;
-  /* Expand 10px down */
-  left: 0;
-  right: 0;
+  top:      -10px;
+  bottom:   -10px;
+  left:     0;
+  right:    0;
 }
 
 .ev-block:hover .resize-handle {
   background: currentColor;
-  opacity: .25;
+  opacity:    .25;
 }
 
 /* ── Mobile day picker ── */
@@ -340,32 +332,44 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .resize-handle {
-    height: 16px;
-    /* tall enough for a thumb */
-    background: rgba(255, 255, 255, 0.15);
+    height:        16px;
+    background:    rgba(255, 255, 255, 0.15);
     border-radius: 0 0 3px 3px;
-    /* Always visible on mobile so users know it's there */
-    opacity: 1 !important;
-    display: flex;
-    align-items: center;
+    display:       flex;
+    align-items:   center;
     justify-content: center;
+    /* Always show on mobile — users need to know it exists */
+    opacity:       1 !important;
   }
 
-  /* Three grip dots as a visual affordance */
+  /* Grip dots affordance */
   .resize-handle::before {
-    content: '· · ·';
-    font-size: 10px;
+    content:        '· · ·';
+    font-size:      10px;
     letter-spacing: 2px;
-    color: currentColor;
-    opacity: .6;
+    color:          currentColor;
+    opacity:        .6;
     pointer-events: none;
   }
 
-  /* Even bigger touch hit area on mobile */
   .resize-handle::after {
-    top: -20px;
-    /* Even bigger hit area for thumbs */
-    bottom: -20px;
+    top:    -20px;
+    bottom: -8px;
+  }
+
+  /* Add-event button: always visible on mobile, never rely on :hover */
+  .slot-add-btn,
+  .hour-row:hover .slot-add-btn,
+  .anytime-section:hover .slot-add-btn {
+    opacity: .65;
+    width:   32px;
+    height:  32px;
+  }
+
+  .slot-add-btn:active {
+    opacity:    1;
+    color:      var(--c1);
+    background: rgba(128, 128, 128, .08);
   }
 
   :root {
@@ -414,16 +418,9 @@
     min-height: 60px;
   }
 
-  /* Add-event button always visible and bigger on mobile */
-  .slot-add-btn {
-    opacity: .7 !important; 
-    width: 32px;
-    height: 32px;
-  }
-
   /* Anytime chips more comfortable to read */
   .ev-chip {
-    padding: 6px 8px;
+    padding:    6px 8px;
     min-height: 36px;
   }
 }
