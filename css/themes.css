@@ -105,19 +105,18 @@
   --shadow: rgba(149, 157, 165, 0.1);
 }
 
-/* ── Cottagecore ── */
 [data-theme="cottagecore"][data-mode="night"] {
-  --bg:     #3c382f;
-  --surf:   #49443d;
-  --surf2:  #413d35;
-  --border: #5a5449;
-  --c1:     #9fbf8b;
-  --c2:     #d39998;
-  --c3:     #c8b57d;
-  --c4:     #9f8f7f;
-  --text:   #e7e4db;
-  --dim:    #b0a999;
-  --shadow: rgba(0, 0, 0, .18);
+  --bg:     #232b26; /* Deep mossy forest */
+  --surf:   #2d3630; /* Dark ivy */
+  --surf2:  #28312b;
+  --border: #3f4a41;
+  --c1:     #b8d8be; /* Softer, glowing sage */
+  --c2:     #e2b4b4; /* Pressed rose petals */
+  --c3:     #d4c391; /* Dried straw/candlelight */
+  --c4:     #a9998a; 
+  --text:   #ede9e0; /* Creamy parchment */
+  --dim:    #8b948e;
+  --shadow: rgba(0, 0, 0, .3);
 }
 
 [data-theme="cottagecore"][data-mode="day"] {
