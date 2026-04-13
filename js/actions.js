@@ -474,8 +474,17 @@ function openAddEvent(key, hour = null) {
       style="margin-bottom:10px;" autofocus>
     <input class="inp" id="evTime" placeholder="Time (optional, e.g. 9am or 14:00)"
       value="${defaultTime}" style="margin-bottom:10px;">
-    <input class="inp" id="evDuration" type="number" min="1" max="12" value="1"
-      style="margin-bottom:14px;" placeholder="Duration (hours)">
+    <select class="inp" id="evDuration" style="margin-bottom:14px;">
+      <option value="0.25">15 min</option>
+      <option value="0.5">30 min</option>
+      <option value="0.75">45 min</option>
+      <option value="1" selected>1 hour</option>
+      <option value="1.5">1.5 hours</option>
+      <option value="2">2 hours</option>
+      <option value="3">3 hours</option>
+      <option value="4">4 hours</option>
+      <option value="6">6 hours</option>
+    </select>
     <div style="margin-bottom:16px;">
       <div class="dim" style="font-size:12px; letter-spacing:1px; margin-bottom:8px;">
         EVENT COLOUR</div>
@@ -510,7 +519,7 @@ function selectEventColor(hex, swatchEl) {
 function confirmAddEvent(key) {
   const text = document.getElementById('evTxt').value.trim();
   const time = document.getElementById('evTime').value.trim();
-  const duration = Math.max(1, Number(document.getElementById('evDuration')?.value) || 1);
+  const duration = Math.max(0.25, Number(document.getElementById('evDuration')?.value) || 0.25);
   const color = document.getElementById('evColor')?.value || 'var(--c1)';
   if (!text) return;
 

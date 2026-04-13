@@ -42,9 +42,9 @@ function formatHour(h) {
   return `${label}${h < 12 ? 'am' : 'pm'}`;
 }
 
-/** Return the duration of an event in hours (minimum 1). */
+/** Return the duration of an event in hours (minimum 0.25 = 15 min). */
 function getEventDuration(ev) {
-  return Math.max(1, Number(ev.duration) || 1);
+  return Math.max(0.25, Number(ev.duration) || 0.25);
 }
 
 /**
@@ -103,8 +103,8 @@ function renderCalendar() {
     // Absolutely-positioned timed blocks
     const eventBlocks = timedLayout.map(item => {
       // Use the dynamic height for positioning
-      const top = (item.start - 6) * currentHourHeight + 4;
-      const height = Math.max(currentHourHeight - 8, item.duration * currentHourHeight - 8);
+      const top    = (item.start - 6) * currentHourHeight + 4;
+      const height = Math.max(20, item.duration * currentHourHeight - 4);
       const left = isMobile ? `calc(36px + ${item.lane * 10}px)` : `calc(44px + ${item.lane * 10}px)`;
       const width = isMobile
         ? `calc(${100 / columnCount}% - 44px - ${item.lane * 10}px)`
@@ -206,7 +206,10 @@ function renderCalendar() {
 
   document.getElementById('calGrid').innerHTML = calHtml;
   document.getElementById('mobileDayPicker').innerHTML = mobPickHtml;
-  lucide.createIcons()
+
+  // Re-hydrate lucide icons — renderCalendar is called directly during resize
+  // without going through render(), so icons must be created here too.
+  if (window.lucide) lucide.createIcons();
 }
 
 // ════════════════════════════════════════

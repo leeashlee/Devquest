@@ -59,9 +59,9 @@ function dropTask(ev, dateKey, hour = null) {
 }
 
 // ── Timeline resize ───────────────────────────────────────
-let resizingEvent = null;
-let resizeStartY = 0;
-let resizeInitialDuration = 1;
+let resizingEvent         = null;
+let resizeStartY          = 0;
+let resizeInitialDuration = 0.25;
 
 function startResizeEvent(ev, dateKey, eventId) {
   ev.preventDefault();
@@ -91,15 +91,17 @@ function handleResizeMove(ev) {
   // Prevent the page from scrolling while resizing on touch
   ev.preventDefault();
 
-  const isMobile = window.innerWidth <= 900;
-  const currentHourH = isMobile ? 60 : 50;
-  const deltaY = ev.clientY - resizeStartY;
-  const deltaHours = Math.round(deltaY / currentHourH);
-  const dayEvts = S.events[resizingEvent.dateKey] || [];
-  const target = dayEvts.find(e => e.id === resizingEvent.eventId);
-  const startHour = parseEventHour(target?.time) || 6;
-  const maxDuration = 22 - startHour;
-  const newDuration = Math.min(Math.max(1, resizeInitialDuration + deltaHours), maxDuration);
+  const isMobile      = window.innerWidth <= 900;
+  const currentHourH  = isMobile ? 60 : 50;
+  const deltaY        = ev.clientY - resizeStartY;
+
+  // Snap to 15-min (0.25h) increments
+  const deltaHours    = Math.round((deltaY / currentHourH) * 4) / 4;
+  const dayEvts       = S.events[resizingEvent.dateKey] || [];
+  const target        = dayEvts.find(e => e.id === resizingEvent.eventId);
+  const startHour     = parseEventHour(target?.time) || 6;
+  const maxDuration   = 22 - startHour;
+  const newDuration   = Math.min(Math.max(0.25, resizeInitialDuration + deltaHours), maxDuration);
 
   if (target && getEventDuration(target) !== newDuration) {
     target.duration = newDuration;
