@@ -206,6 +206,7 @@ function renderCalendar() {
 
   document.getElementById('calGrid').innerHTML = calHtml;
   document.getElementById('mobileDayPicker').innerHTML = mobPickHtml;
+  lucide.createIcons()
 }
 
 // ════════════════════════════════════════
