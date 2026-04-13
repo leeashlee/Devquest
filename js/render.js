@@ -30,21 +30,61 @@ function parseEventHour(time) {
   const m = String(time).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
   if (!m) return null;
   let hour = parseInt(m[1], 10);
+  let mins = parseInt(m[2] || '0', 10);
   const ampm = m[3]?.toLowerCase() ?? null;
   if (ampm === 'pm' && hour < 12) hour += 12;
   if (ampm === 'am' && hour === 12) hour = 0;
-  return hour;
+  return hour + (mins / 60); // e.g., 10:30am -> 10.5
 }
 
 /** Format an integer hour as "9am" / "12pm" etc. */
 function formatHour(h) {
-  const label = h % 12 === 0 ? 12 : h % 12;
-  return `${label}${h < 12 ? 'am' : 'pm'}`;
+  let hour = Math.floor(h);
+  let mins = Math.round((h - hour) * 60);
+  const ampm = hour < 12 || hour === 24 ? 'am' : 'pm';
+  if (hour === 0) hour = 12;
+  else if (hour > 12) hour -= 12;
+  
+  const minStr = mins > 0 ? `:${mins.toString().padStart(2, '0')}` : '';
+  return `${hour}${minStr}${ampm}`; // e.g., 10.5 -> "10:30am"
 }
 
 /** Return the duration of an event in hours (minimum 1). */
 function getEventDuration(ev) {
-  return Math.max(1, Number(ev.duration) || 1);
+  // Lowered minimum from 1 to 0.25 (15 mins) so resizes stick
+  return Math.max(0.25, Number(ev.duration) || 1);
+}
+
+function getFreeStart(dateKey, baseHour, duration, excludeId = null) {
+  const evts = (S.events[dateKey] || []).filter(e => e.id !== excludeId);
+  let proposed = baseHour;
+  
+  const sorted = evts
+    .map(e => ({
+      start: parseEventHour(e.time),
+      end: parseEventHour(e.time) + getEventDuration(e)
+    }))
+    .filter(e => e.start !== null)
+    .sort((a, b) => a.start - b.start);
+    
+  for (const e of sorted) {
+    // If our proposed start overlaps an event, push it to the end of that event
+    if (proposed >= e.start && proposed < e.end) {
+      proposed = e.end;
+    }
+  }
+  
+  // If pushing it shoved it into the next hour block entirely, reject
+  if (proposed >= baseHour + 1) return null;
+  
+  // Verify our proposed time + duration doesn't bleed into the next event
+  for (const e of sorted) {
+    if (e.start > proposed && proposed + duration > e.start) {
+      return null; 
+    }
+  }
+  
+  return proposed; // Returns a decimal like 10.5
 }
 
 /**
@@ -75,13 +115,8 @@ function getTimedEvents(evts) {
  * Both are handled by: start <= hour < end  (end = start + duration).
  */
 function isHourOccupied(dateKey, hour, excludeId = null) {
-  return (S.events[dateKey] || []).some(ev => {
-    if (excludeId && ev.id === excludeId) return false;
-    const start = parseEventHour(ev.time);
-    if (start === null) return false;
-    const end = start + getEventDuration(ev);
-    return hour >= start && hour < end;
-  });
+  // An hour is only visually "occupied" if we can't fit even a 15-min task
+  return getFreeStart(dateKey, hour, 0.25, excludeId) === null;
 }
 
 /**

@@ -33,28 +33,39 @@ function dropTask(ev, dateKey, hour = null) {
   if (!S.events[dateKey]) S.events[dateKey] = [];
 
   if (data.moveEvent) {
-    // Move an existing event to a new day / hour
+    // Move an existing event
     const sourceEvts = S.events[data.dateKey] || [];
     const evIdx = sourceEvts.findIndex(e => e.id === data.eventId);
     if (evIdx === -1) return;
 
-    // Reject if the target hour is occupied by a different event
-    if (hour !== null && isHourOccupied(dateKey, hour, data.eventId)) return;
+    const movedEv = sourceEvts[evIdx];
+    
+    if (hour !== null) {
+      // Find exact available start time (e.g., 10.5 if 10.0 is taken)
+      const newStart = getFreeStart(dateKey, hour, getEventDuration(movedEv), data.eventId);
+      if (newStart === null) return; // Abort drop if no space fits the duration
+      movedEv.time = formatHour(newStart);
+    }
 
-    const [movedEv] = sourceEvts.splice(evIdx, 1);
-    if (hour !== null) movedEv.time = formatHour(hour);
+    sourceEvts.splice(evIdx, 1);
     S.events[dateKey].push(movedEv);
-  } else {
-    // Reject if the target hour is already taken
-    if (hour !== null && isHourOccupied(dateKey, hour)) return;
 
-    // Drop a task from the work log as a new calendar event
+  } else {
+    // Drop a new task
+    const duration = data.duration || 1;
+    let newStart = null;
+
+    if (hour !== null) {
+      newStart = getFreeStart(dateKey, hour, duration, null);
+      if (newStart === null) return; // Abort drop if no space
+    }
+
     S.events[dateKey].push({
       id: String(S.nextId++),
       text: data.text,
       color: data.color,
-      time: hour !== null ? formatHour(hour) : '',
-      duration: data.duration || 1,
+      time: newStart !== null ? formatHour(newStart) : '',
+      duration: duration,
       priority: data.priority || null,
       taskRef: (data.pId != null) ? { pId: data.pId, cId: data.cId, tId: data.tId } : null,
     });
