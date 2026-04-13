@@ -29,8 +29,8 @@ DEVQUEST is a dark cyberpunk-inspired task and schedule app that helps you organ
 ## Files
 
 - `index.html` — main application markup and layout
-- `styles.css` — theme variables, layout rules, and UI styling
-- `script.js` — app state, rendering, modal controls, data persistence, and user interactions
+- `/css` — theme variables, layout rules, and UI styling
+- `/js` — app state, rendering, modal controls, data persistence, and user interactions
 
 ## Notes
 
