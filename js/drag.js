@@ -38,10 +38,16 @@ function dropTask(ev, dateKey, hour = null) {
     const evIdx = sourceEvts.findIndex(e => e.id === data.eventId);
     if (evIdx === -1) return;
 
+    // Reject if the target hour is occupied by a different event
+    if (hour !== null && isHourOccupied(dateKey, hour, data.eventId)) return;
+
     const [movedEv] = sourceEvts.splice(evIdx, 1);
     if (hour !== null) movedEv.time = formatHour(hour);
     S.events[dateKey].push(movedEv);
   } else {
+    // Reject if the target hour is already taken
+    if (hour !== null && isHourOccupied(dateKey, hour)) return;
+
     // Drop a task from the work log as a new calendar event
     S.events[dateKey].push({
       id: String(S.nextId++),
@@ -50,7 +56,6 @@ function dropTask(ev, dateKey, hour = null) {
       time: hour !== null ? formatHour(hour) : '',
       duration: data.duration || 1,
       priority: data.priority || null,
-      // Store task reference so priority stays live when task changes
       taskRef: (data.pId != null) ? { pId: data.pId, cId: data.cId, tId: data.tId } : null,
     });
   }
@@ -59,9 +64,9 @@ function dropTask(ev, dateKey, hour = null) {
 }
 
 // ── Timeline resize ───────────────────────────────────────
-let resizingEvent         = null;
-let resizeStartY          = 0;
-let resizeInitialDuration = 0.25;
+let resizingEvent = null;
+let resizeStartY = 0;
+let resizeInitialDuration = 1;
 
 function startResizeEvent(ev, dateKey, eventId) {
   ev.preventDefault();
@@ -88,20 +93,22 @@ function startResizeEvent(ev, dateKey, eventId) {
 function handleResizeMove(ev) {
   if (!resizingEvent) return;
 
-  // Prevent the page from scrolling while resizing on touch
   ev.preventDefault();
 
-  const isMobile      = window.innerWidth <= 900;
-  const currentHourH  = isMobile ? 60 : 50;
-  const deltaY        = ev.clientY - resizeStartY;
+  const isMobile = window.innerWidth <= 900;
+  const currentHourH = isMobile ? 60 : 50;
+  const deltaY = ev.clientY - resizeStartY;
 
   // Snap to 15-min (0.25h) increments
-  const deltaHours    = Math.round((deltaY / currentHourH) * 4) / 4;
-  const dayEvts       = S.events[resizingEvent.dateKey] || [];
-  const target        = dayEvts.find(e => e.id === resizingEvent.eventId);
-  const startHour     = parseEventHour(target?.time) || 6;
-  const maxDuration   = 22 - startHour;
-  const newDuration   = Math.min(Math.max(0.25, resizeInitialDuration + deltaHours), maxDuration);
+  const deltaHours = Math.round((deltaY / currentHourH) * 4) / 4;
+  const dayEvts = S.events[resizingEvent.dateKey] || [];
+  const target = dayEvts.find(e => e.id === resizingEvent.eventId);
+  const startHour = parseEventHour(target?.time) || 6;
+
+  // Hard cap: can't resize past 10pm OR into the next event's start hour
+  const nextStart = nextOccupiedHour(resizingEvent.dateKey, startHour, resizingEvent.eventId);
+  const maxDuration = Math.min(22 - startHour, nextStart - startHour);
+  const newDuration = Math.min(Math.max(0.25, resizeInitialDuration + deltaHours), maxDuration);
 
   if (target && getEventDuration(target) !== newDuration) {
     target.duration = newDuration;

@@ -42,39 +42,59 @@ function formatHour(h) {
   return `${label}${h < 12 ? 'am' : 'pm'}`;
 }
 
-/** Return the duration of an event in hours (minimum 0.25 = 15 min). */
+/** Return the duration of an event in hours (minimum 1). */
 function getEventDuration(ev) {
-  return Math.max(0.25, Number(ev.duration) || 0.25);
+  return Math.max(1, Number(ev.duration) || 1);
 }
 
 /**
- * Assign timed events to non-overlapping lanes for side-by-side rendering.
- * Returns an array of { ev, start, duration, end, lane }.
+ * Returns timed events sorted by start time, no lane assignment needed
+ * since we enforce no overlaps at drop/resize time.
  */
-function computeTimedLayout(evts) {
-  const timed = evts
+function getTimedEvents(evts) {
+  return evts
     .filter(ev => {
       const h = parseEventHour(ev.time);
       return h !== null && h >= 6 && h <= 22;
     })
-    .sort((a, b) => (parseEventHour(a.time) || 6) - (parseEventHour(b.time) || 6));
+    .map(ev => ({
+      ev,
+      start: parseEventHour(ev.time) || 6,
+      duration: getEventDuration(ev),
+      end: (parseEventHour(ev.time) || 6) + getEventDuration(ev),
+    }))
+    .sort((a, b) => a.start - b.start);
+}
 
-  const columns = []; // tracks the end-hour of each lane
-  return timed.map(ev => {
-    const start = parseEventHour(ev.time) || 6;
-    const duration = getEventDuration(ev);
-    const end = start + duration;
-
-    let lane = columns.findIndex(lastEnd => start >= lastEnd);
-    if (lane === -1) {
-      lane = columns.length;
-      columns.push(end);
-    } else {
-      columns[lane] = end;
-    }
-
-    return { ev, start, duration, end, lane };
+/**
+ * Returns true if the integer hour slot is occupied by any timed event
+ * on the given day (optionally excluding one event by id — used during resize).
+ *
+ * Rule 1: event with duration >= 1h blocks every integer hour it spans.
+ * Rule 2: event with duration < 1h blocks only its start hour.
+ * Both are handled by: start <= hour < end  (end = start + duration).
+ */
+function isHourOccupied(dateKey, hour, excludeId = null) {
+  return (S.events[dateKey] || []).some(ev => {
+    if (excludeId && ev.id === excludeId) return false;
+    const start = parseEventHour(ev.time);
+    if (start === null) return false;
+    const end = start + getEventDuration(ev);
+    return hour >= start && hour < end;
   });
+}
+
+/**
+ * Returns the start hour of the nearest timed event that begins
+ * strictly AFTER afterHour on the given day (excluding one event).
+ * Used to cap resize duration.
+ */
+function nextOccupiedHour(dateKey, afterHour, excludeId) {
+  const starts = (S.events[dateKey] || [])
+    .filter(ev => ev.id !== excludeId)
+    .map(ev => parseEventHour(ev.time))
+    .filter(h => h !== null && h > afterHour);
+  return starts.length ? Math.min(...starts) : 22;
 }
 
 function renderCalendar() {
@@ -96,19 +116,17 @@ function renderCalendar() {
     const evts = S.events[key] || [];
     const today = isToday(day);
 
-    const timedLayout = computeTimedLayout(evts);
+    const timedLayout = getTimedEvents(evts);
     const untimedEvts = evts.filter(ev => parseEventHour(ev.time) === null);
-    const columnCount = Math.max(1, ...timedLayout.map(item => item.lane + 1));
 
-    // Absolutely-positioned timed blocks
+    // Absolutely-positioned timed blocks — full width, no lanes needed
     const eventBlocks = timedLayout.map(item => {
-      // Use the dynamic height for positioning
-      const top    = (item.start - 6) * currentHourHeight + 4;
-      const height = Math.max(20, item.duration * currentHourHeight - 4);
-      const left = isMobile ? `calc(36px + ${item.lane * 10}px)` : `calc(44px + ${item.lane * 10}px)`;
+      const top = (item.start - 6) * currentHourHeight + 4;
+      const height = Math.max(20, item.duration * currentHourHeight - 8);
+      const left = isMobile ? '36px' : '44px';
       const width = isMobile
-        ? `calc(${100 / columnCount}% - 44px - ${item.lane * 10}px)`
-        : `calc(${100 / columnCount}% - 52px - ${item.lane * 10}px)`;
+        ? 'calc(100% - 44px)'
+        : 'calc(100% - 52px)';
       const ev = item.ev;
       const prioDot = ev.priority
         ? `<span style="width:6px; height:6px; border-radius:50%; flex-shrink:0; display:inline-block;
@@ -154,9 +172,9 @@ function renderCalendar() {
 
     // Background hour rows
     const hourRows = hours.map(hour => {
-      const occupied = timedLayout.some(item => hour >= item.start && hour < item.end);
+      const occupied = isHourOccupied(key, hour);
       return `
-        <div class="hour-row"
+        <div class="hour-row${occupied ? ' hour-occupied' : ''}"
           ondragover="allowDrop(event)"
           ondrop="dropTask(event, '${key}', ${hour})"
           ondragenter="dragEnter(event)"
