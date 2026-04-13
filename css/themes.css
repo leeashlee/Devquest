@@ -5,74 +5,74 @@
 
 /* Default fallback (same as cyber/night) */
 :root {
-  --bg:     #02020f;
-  --surf:   #07071c;
-  --surf2:  #0c0c26;
-  --border: #1a2560;
-  --c1:     #00f5d4;
-  --c2:     #ff2271;
-  --c3:     #ffe566;
-  --c4:     #a855f7;
-  --text:   #aac4e8;
-  --dim:    #3a5878;
+  --bg:     #02020f; /* Dark blue-black */
+  --surf:   #07071c; /* Very dark blue */
+  --surf2:  #0c0c26; /* Dark blue-gray */
+  --border: #1a2560; /* Muted blue-gray */
+  --c1:     #00f5d4; /* Cyan */
+  --c2:     #ff2271; /* Magenta */
+  --c3:     #ffe566; /* Yellow */
+  --c4:     #a855f7; /* Purple */
+  --text:   #aac4e8; /* Light blue-gray */
+  --dim:    #3a5878; /* Muted blue-gray */
   --shadow: rgba(0, 245, 212, .05);
 }
 
 /* ── Cyber ── */
 [data-theme="cyber"][data-mode="night"] {
-  --bg:     #02020f;
-  --surf:   #07071c;
-  --surf2:  #0c0c26;
-  --border: #1a2560;
-  --c1:     #00f5d4;
-  --c2:     #ff2271;
-  --c3:     #ffe566;
-  --c4:     #a855f7;
-  --text:   #aac4e8;
-  --dim:    #3a5878;
+  --bg:     #02020f; /* Dark blue-black */
+  --surf:   #07071c; /* Very dark blue */
+  --surf2:  #0c0c26; /* Dark blue-gray */
+  --border: #1a2560; /* Muted blue-gray */
+  --c1:     #00f5d4; /* Cyan */
+  --c2:     #ff2271; /* Magenta */
+  --c3:     #ffe566; /* Yellow */
+  --c4:     #a855f7; /* Purple */
+  --text:   #aac4e8; /* Light blue-gray */
+  --dim:    #3a5878; /* Muted blue-gray */
   --shadow: rgba(0, 245, 212, .05);
 }
 
 [data-theme="cyber"][data-mode="day"] {
-  --bg:     #d7ebff;
-  --surf:   #f4fbff;
-  --surf2:  #def3ff;
-  --border: #94c5e8;
-  --c1:     #0c73ff;
-  --c2:     #ff6fb3;
-  --c3:     #fbbf24;
-  --c4:     #8b5cf6;
-  --text:   #0f172a;
-  --dim:    #475569;
+  --bg:     #d7ebff; /* Light blue */
+  --surf:   #f4fbff; /* Very light blue */
+  --surf2:  #def3ff; /* Light blue */
+  --border: #94c5e8; /* Blue-gray */
+  --c1:     #0c73ff; /* Bright blue */
+  --c2:     #ff6fb3; /* Pink */
+  --c3:     #fbbf24; /* Yellow */
+  --c4:     #8b5cf6; /* Purple */
+  --text:   #0f172a; /* Very dark blue-gray */
+  --dim:    #475569; /* Muted blue-gray */
   --shadow: rgba(15, 23, 42, .08);
 }
 
 /* ── Y2K ── */
 [data-theme="y2k"][data-mode="night"] {
-  --bg:     #2b0f25;
-  --surf:   #3d152f;
-  --surf2:  #2d0f22;
-  --border: #5c2f5a;
-  --c1:     #f472b6;
-  --c2:     #fb7185;
-  --c3:     #facc15;
-  --c4:     #a855f7;
-  --text:   #f8e7ff;
-  --dim:    #b69bcc;
+  --bg:     #2b0f25; /* Dark, moody purple-black  */
+  --surf:   #3d152f; /* Deep, rich purple */
+  --surf2:  #2d0f22; /* Even darker purple-black */
+  --border: #5c2f5a; /* Muted purple-gray */
+  --c1:     #f472b6; /* Bright pink bubblegum */
+  --c2:     #fb7185; /* Soft coral pink */
+  --c3:     #facc15; /* Sunny yellow lemon drop */
+  --c4:     #a855f7; /* Vibrant purple grape soda */
+  --text:   #f8e7ff; /* Soft pinkish-white */
+  --dim:    #b69bcc; /* Muted purple-gray */
   --shadow: rgba(244, 114, 182, .15);
 }
 
 [data-theme="y2k"][data-mode="day"] {
-  --bg:     #ffe8f7;
-  --surf:   #fff2ff;
-  --surf2:  #fde4ff;
-  --border: #f0c6e3;
-  --c1:     #f472b6;
-  --c2:     #fb7185;
-  --c3:     #facc15;
-  --c4:     #7c3aed;
-  --text:   #42275a;
-  --dim:    #6d5d7b;
+  --bg:     #ffe8f7; /* Soft pink cotton candy */
+  --surf:   #fff2ff; /* Lighter pink bubblegum */
+  --surf2:  #fde4ff; /* Very light pink marshmallow */
+  --border: #f0c6e3; /* Pastel pink frosting */
+  --c1:     #f472b6; /* Bright pink bubblegum */
+  --c2:     #fb7185; /* Soft coral pink */
+  --c3:     #facc15; /* Sunny yellow lemon drop */
+  --c4:     #7c3aed; /* Vibrant purple grape soda */
+  --text:   #42275a; /* Deep purple ink */
+  --dim:    #6d5d7b; /* Muted purple-gray */
   --shadow: rgba(124, 58, 237, .1);
 }
 
@@ -80,55 +80,55 @@
 [data-theme="zen"][data-mode="night"] {
   --bg:     #1a1c1e; /* Deep charcoal ink */
   --surf:   #232528; /* Polished river stone */
-  --surf2:  #1d1f21; 
-  --border: #2d3034;
+  --surf2:  #1d1f21; /* Darker stone */
+  --border: #2d3034; /* Weathered stone */
   --c1:     #78997a; /* Muted Sage */
   --c2:     #98c1d9; /* Pale Mist Blue */
   --c3:     #e07a5f; /* Soft Terracotta (accent) */
-  --c4:     #a8dadc;
+  --c4:     #a8dadc; /* Light Minty Blue */
   --text:   #cecfd1; /* Soft white (less eye strain) */
-  --dim:    #6b7280;
+  --dim:    #6b7280; /* Muted gray */
   --shadow: rgba(0, 0, 0, .4);
 }
 
 [data-theme="zen"][data-mode="day"] {
   --bg:     #fcfaf7; /* Paper/Washi texture feel */
-  --surf:   #ffffff;
+  --surf:   #ffffff; /* Clean white surface */
   --surf2:  #f3f1ed; /* Soft sand */
-  --border: #e2e0db;
+  --border: #e2e0db; /* Weathered stone */
   --c1:     #5e715e; /* Forest Moss */
   --c2:     #4a6d88; /* Deep Water */
   --c3:     #b87d4b; /* Bamboo Wood */
-  --c4:     #7a8d91;
+  --c4:     #7a8d91; /* Misty Gray-Blue */
   --text:   #2c302e; /* Soft Slate charcoal */
-  --dim:    #8e918f;
+  --dim:    #8e918f; /* Muted gray */
   --shadow: rgba(149, 157, 165, 0.1);
 }
 
 [data-theme="cottagecore"][data-mode="night"] {
   --bg:     #232b26; /* Deep mossy forest */
   --surf:   #2d3630; /* Dark ivy */
-  --surf2:  #28312b;
-  --border: #3f4a41;
+  --surf2:  #28312b; /* Darker ivy */
+  --border: #3f4a41; /* Weathered wood */
   --c1:     #b8d8be; /* Softer, glowing sage */
   --c2:     #e2b4b4; /* Pressed rose petals */
   --c3:     #d4c391; /* Dried straw/candlelight */
-  --c4:     #a9998a; 
+  --c4:     #a9998a; /* Faded leather */
   --text:   #ede9e0; /* Creamy parchment */
-  --dim:    #8b948e;
+  --dim:    #8b948e; /* Muted gray-green */
   --shadow: rgba(0, 0, 0, .3);
 }
 
 [data-theme="cottagecore"][data-mode="day"] {
-  --bg:     #fdf6e3;
-  --surf:   #fffbf0;
-  --surf2:  #f4ecd8;
-  --border: #d4c4a8;
-  --c1:     #8a9a5b;
-  --c2:     #c87a7a;
-  --c3:     #d4a373;
-  --c4:     #a38771;
-  --text:   #4a3f35;
-  --dim:    #8c7a6b;
+  --bg:     #fdf6e3; /* Soft, warm parchment */
+  --surf:   #fffbf0; /* Light cream */
+  --surf2:  #f4ecd8; /* Sunlit straw */
+  --border: #d4c4a8; /* Weathered wood */
+  --c1:     #8a9a5b; /* Earthy olive green */
+  --c2:     #c87a7a; /* Muted rose */
+  --c3:     #d4a373; /* Warm terracotta */
+  --c4:     #a38771; /* Soft taupe */
+  --text:   #4a3f35; /* Rich brown ink */
+  --dim:    #8c7a6b; /* Faded brown */
   --shadow: rgba(138, 154, 91, .1);
 }
