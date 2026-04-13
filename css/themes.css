@@ -78,31 +78,31 @@
 
 /* ── Zen ── */
 [data-theme="zen"][data-mode="night"] {
-  --bg:     #2f3136;
-  --surf:   #3a3d42;
-  --surf2:  #33363b;
-  --border: #4f5359;
-  --c1:     #8cc3a3;
-  --c2:     #d29a75;
-  --c3:     #d6c586;
-  --c4:     #8c9aa9;
-  --text:   #e5e7eb;
-  --dim:    #94a3b8;
-  --shadow: rgba(0, 0, 0, .18);
+  --bg:     #1a1c1e; /* Deep charcoal ink */
+  --surf:   #232528; /* Polished river stone */
+  --surf2:  #1d1f21; 
+  --border: #2d3034;
+  --c1:     #78997a; /* Muted Sage */
+  --c2:     #98c1d9; /* Pale Mist Blue */
+  --c3:     #e07a5f; /* Soft Terracotta (accent) */
+  --c4:     #a8dadc;
+  --text:   #cecfd1; /* Soft white (less eye strain) */
+  --dim:    #6b7280;
+  --shadow: rgba(0, 0, 0, .4);
 }
 
 [data-theme="zen"][data-mode="day"] {
-  --bg:     #eae6df;
-  --surf:   #f5f2eb;
-  --surf2:  #dfdcd5;
-  --border: #b5b1a8;
-  --c1:     #607c64;
-  --c2:     #9e6d5a;
-  --c3:     #a89f68;
-  --c4:     #5b6b7a;
-  --text:   #3e423f;
-  --dim:    #7a7d78;
-  --shadow: rgba(0, 0, 0, .05);
+  --bg:     #fcfaf7; /* Paper/Washi texture feel */
+  --surf:   #ffffff;
+  --surf2:  #f3f1ed; /* Soft sand */
+  --border: #e2e0db;
+  --c1:     #5e715e; /* Forest Moss */
+  --c2:     #4a6d88; /* Deep Water */
+  --c3:     #b87d4b; /* Bamboo Wood */
+  --c4:     #7a8d91;
+  --text:   #2c302e; /* Soft Slate charcoal */
+  --dim:    #8e918f;
+  --shadow: rgba(149, 157, 165, 0.1);
 }
 
 /* ── Cottagecore ── */
